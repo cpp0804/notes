@@ -162,7 +162,7 @@ commit;
 两者锁库存时间都为update到commit，但是方案1的时间比方案2更长，并发性更差。因此越热点的记录应放到事务的后面
 
 ---
-```
+```SQL
 方案1：
  begin:
  int count = select count from t_inventory for update;
@@ -172,7 +172,7 @@ commit;
  else
  	rollback
 ```
-```
+```SQL
 方案2：
  begin:
  	int rows = update t_inventory set count=count-5 where id =123 and count >=5
@@ -186,200 +186,10 @@ commit;
 
 
 ## 1.4 多版本并发控制(MVCC)
-保存数据库某时间的快照，一个事务从开始到结束读的内容都是一样的。做到不加锁也能处理读写冲突。行锁的变种。
+[MVCC](./MVCC.md)
 
-通过3个隐式字段，undo日志，read view实现。
-### 1.4.1 两种读
-##### 1. 当前读
-类似select in share mode(共享锁), select for update、update、insert、delete(排它锁)等都是当前读，读的都是最新的数据，读取时不允许其他事务更改数据。
-
-##### 2. 快照读
-类似普通select，在读取时不加锁。读到的不一定是最新数据，可能是历史数据。MVCC就是解决快照读的问题。
-
-下面介绍InnoDB简化的MVCC实现：
-1. 在每行记录后添加两个隐藏列，一列记录行的创建时间，一列记录行的删除时间。时间指的是系统版本号
-2. 每开始一个新事务，系统版本号都加1，事务开始时的系统版本号作为对应事务的版本号。
-3. 只在REPEATABLE READ和READ COMMITTED两个级别实现
-
-- select
-
-根据两个条件查找记录：
-
-(1) 只返回创建系统版本号小于等于当前事务版本号的(确保读取的行出现在事务以前或被该事务操作过)
-
-(2) 只返回删除系统版本号为undefined或者大于当前事务版本号的(确读取的行在事务开始前没被删除)
-
-- insert
-
-将当前系统版本号作为创建时间
-
-- delete
-
-将当前系统版本号作为删除时间
-
-- update
-
-update其实是插入新的一行，将当前系统版本号作为新行的创建时间以及作为旧行的删除时间
-
-### 1.4.2 三个隐式字段
-(1)DB_TRX_ID
-
-最近修改事务ID：最后一次修改该记录的事务ID
-
-(2)DB_ROLL_PTR
-
-回滚指针：指向rollback segment(undo log)中上一个版本的地址
-
-(3)DB_ROW_ID
-
-隐藏的自增ID：如果数据表没有主键，InnodDB自动以DB_ROW_ID作为聚簇索引
-
-举例：
-
-1. 首先事务1插入一条记录
-
-操作事务ID|name|age|DB_ROW_ID|DB_TRX_ID|DB_ROLL_PTR
----|---|---|---|---|---|
-1|jerry|24|1|1|null
-
-2. 事务2将名字修改为tom：首先事务2修改这行时，数据库会对该行加排它锁。然后将这行复制到undo log中。拷贝完毕后，修改name为tom，将DB_TRX_ID修改为2，将DB_ROLL_PTR指向复制到undo log中的拷贝记录。最后提交记录，释放锁。
-
-操作事务ID|name|age|DB_ROW_ID|DB_TRX_ID|DB_ROLL_PTR
----|---|---|---|---|---|
-2|tom|24|1|2|0x124465
-
-undo log：
-位置|name|age|DB_ROW_ID|DB_TRX_ID|DB_ROLL_PTR
----|---|---|---|---|---|
-0x124465|tom|24|1|1|null
-
-3. 事务3将年龄改为30：首先事务3修改这行时，数据库会对该行加排它锁。然后将这行复制到undo log中，发现这行记录已经有log了，就将这条log插入原有log的前面作为链头。拷贝完毕后，修改age为30，将DB_TRX_ID修改为3，将DB_ROLL_PTR指向复制到undo log中的拷贝记录。最后提交记录，释放锁。
-
-操作事务ID|name|age|DB_ROW_ID|DB_TRX_ID|DB_ROLL_PTR
----|---|---|---|---|---|
-3|tom|30|1|3|0x124469
-
-undo log：同一记录的undo log会形成一个版本链表，最新的记录在表头
-位置|name|age|DB_ROW_ID|DB_TRX_ID|DB_ROLL_PTR
----|---|---|---|---|---|
-0x124469|tom|24|1|2|0x124465
-
-位置|name|age|DB_ROW_ID|DB_TRX_ID|DB_ROLL_PTR
----|---|---|---|---|---|
-0x124465|tom|24|1|1|null
-
-### 1.4.3 read view(读视图)
-read view是当某个事务执行快照读的时候，会生成数据库的当前快照，维护当前活跃的事务。将根据read view来判断事务能读到哪个版本的数据(可能是最新的，也可能是undo log里的)。判断方法是拿read view中被访问记录的DB_TRX_ID和read view中其他事务的事务ID作比较，如果满足可见性条件，就可以访问。如果不满足，则拿记录的DB_ROLL_PTR取undo log中取，直到满足可见性条件。
-
-![avatar](./pic/readview示意图.jpg)
-ms
-read view有四个字段：
-```
-1. m_ids：表示在生成ReadView时当前系统中活跃的读写事务的事务id列表。
-2. min_trx_id：表示在生成ReadView时当前系统中活跃的读写事务中最小的事务id，也就是m_ids中的最小值。
-3. max_trx_id：表示生成ReadView时系统中应该分配给下一个事务的id值。
-4. creator_trx_id：表示生成该ReadView的事务的事务id。
-```
-1. 当要访问记录的DB_TRX_ID等于creator_trx_id，说明当前事务要访问被他最后一次修改过的记录，该版本记录可以被访问。
-2. 当要访问记录的DB_TRX_ID小于min_trx_id，说明
-
-## 1.5 MySQL的存储引擎
-表的定义有MYSQL服务层统一处理，存储在和表同名的.frm文件中；数据和索引由存储引擎存储。
-### 1.5.1 查看数据库信息的命令行
-```
-//查看有哪些数据库
-mysql> show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| gym                |
-| java_class         |
-| mysql              |
-| performance_schema |
-| sand_simulation    |
-| spring-class       |
-| spring-mvc-class   |
-| stock              |
-| sys                |
-+--------------------+
-10 rows in set (0.00 sec)
-
-//具体选择某个数据库查看
-mysql> use spring-class;
-
-//查看表
-mysql>show tables;
-+------------------------+
-| Tables_in_spring-class |
-+------------------------+
-| account                |
-| item                   |
-| order_detail           |
-| orders                 |
-| t_user                 |
-| user                   |
-+------------------------+
-6 rows in set (0.00 sec)
-
-//查看account表的数据
-mysql> select * from account
-    -> ;
-+----+----------+-------+
-| id | username | money |
-+----+----------+-------+
-|  1 | jack     |   200 |
-|  2 | mary     | 10900 |
-+----+----------+-------+
-2 rows in set (0.00 sec)
-
-//查看表信息
-mysql> show table status like 'account';
-+---------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+-------------+------------+-------------+----------+----------------+---------+
-| Name    | Engine | Version | Row_format | Rows | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time | Check_time | Collation   | Checksum | Create_options | Comment |
-+---------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+-------------+------------+-------------+----------+----------------+---------+
-| account | InnoDB |      10 | Dynamic    |    2 |           8192 |       16384 |               0 |            0 |         0 |              3 | 2018-10-30 15:22:44 | NULL        | NULL       | utf8mb4_bin |     NULL |                |         |
-+---------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+-------------+------------+-------------+----------+----------------+---------+
-1 row in set (0.00 sec)
-
-//查看表中的列
-mysql> desc account;
-mysql> show columns from account;
-mysql> describe account;
-+----------+-------------+------+-----+---------+----------------+
-| Field    | Type        | Null | Key | Default | Extra          |
-+----------+-------------+------+-----+---------+----------------+
-| id       | int(11)     | NO   | PRI | NULL    | auto_increment |
-| username | varchar(50) | YES  |     | NULL    |                |
-| money    | int(255)    | YES  |     | NULL    |                |
-+----------+-------------+------+-----+---------+----------------+
-3 rows in set (0.00 sec)
-
-//查看表的创建语句
-mysql> show create table account;
-+---------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Table   | Create Table                                                                                                                                                                                                                                                   |
-+---------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| account | CREATE TABLE `account` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) COLLATE utf8mb4_bin DEFAULT NULL,
-  `money` int(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin |
-+---------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-1 row in set (0.00 sec)
-
-//检查表的错误
-mysql> check table account;
-+----------------------+-------+----------+----------+
-| Table                | Op    | Msg_type | Msg_text |
-+----------------------+-------+----------+----------+
-| spring-class.account | check | status   | OK       |
-+----------------------+-------+----------+----------+
-1 row in set (0.01 sec)
-
-mysql> repair table account;
-```
+## 1.5 mysql命令行
+[mysql命令行](./MySQL命令行.md)
 
 ### 1.5.1 InnoDB VS MyISAM
 比较|InnoDB|MyISAM
@@ -389,31 +199,8 @@ mysql> repair table account;
 锁|支持行级锁|不支持行级锁，对整张表加锁。读时加共享锁，写时加排它锁
 事务|崩溃后可以安全恢复|崩溃后只能手动恢复
 
-### 1.5.2 转换表的引擎
-#### 1. alter table 
-```
-mysql> alter table mytable engin=InnoDB;
-```
-MYSQL会将数据从原表复制到新表，执行速度很慢，会丢失原引擎的特性
-
-#### 2. 导入和导出
-使用mysqldump工具将数据导出到文件，然后修改create table中引擎的选择，还要修改表名
-
-#### 3. 创建和查询(create和select)
-```
-mysql> create table newtable like oldtable;
-mysql> alter table newtable engine=InnoDB;
-mysql> insert into newtable select * from oldtable;
-```
-如果数据量大可以分批处理
-```
-mysql> start transaction;
-mysql> insert into newtable select * from oldtable where id betwenn x and y;
-mysql> commit;
-```
-
-# 1.6 SQL语句加锁分析
-
+# 1.6 MySQL语句加锁分析
+[MySQL语句加锁分析](./MySQL语句加锁分析.md)
 
 # 第二章 MySQL基准测试
 ## 基准测试目的
