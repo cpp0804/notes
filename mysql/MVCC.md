@@ -1,5 +1,9 @@
 [TOC]
 # MVCC多版本并发控制
+#### 博文参考
+[一篇文章带你掌握mysql的一致性视图（MVCC）](https://www.cnblogs.com/luozhiyun/p/11216287.html)
+[【MySQL笔记】正确的理解MySQL的MVCC及实现原理](https://blog.csdn.net/SnailMann/article/details/94724197)
+
 保存数据库某时间的快照，一个事务从开始到结束读的内容都是一样的。做到不加锁也能处理读写冲突。行锁的变种。
 
 通过3个隐式字段，undo日志，read view实现。
