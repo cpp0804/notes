@@ -96,7 +96,7 @@ read view有四个字段：
 3. max_trx_id：表示生成ReadView时系统中应该分配给下一个事务的id值。
 4. creator_trx_id：表示生成该ReadView的事务的事务id。
 ```
-![avatar](./pic/1.4.3readview示意图.jpg)
+![readview示意图](./pic/MVCC_readview示意图.jpg)
 
 1. 当要访问记录的最新DB_TRX_ID等于creator_trx_id，说明当前事务要访问被他最后一次修改过的记录，该版本记录可以被访问。
 2. 当要访问记录的DB_TRX_ID小于min_trx_id，说明生成该版本的事务在当前事务创建前已经提交，该版本记录可以被访问。(DB_TRX_ID小于min_trx_id一定保证可以被访问，但是DB_TRX_ID大于min_trx_id的也有可能被访问，图中的指针不表示大小关系)
@@ -126,7 +126,7 @@ select k from t where id =1;	|
 commit;|
 
 记录的版本号变化情况：
-![avatar](./pic/1.4.3事务例子.jpg)
+![事务例子](./pic/MVCC_事务例子.jpg)
 
 对于RR和RC两种情况，read view生成时间会有所不同
 ##### RC 每次读取数据都生成一次read view
