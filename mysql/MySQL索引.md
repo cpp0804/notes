@@ -1,16 +1,21 @@
 ##### 参考博文
-[什么是索引下推](https://juejin.im/post/5deef343e51d455819022033)
+
 [B树和B+树的插入、删除图文详解](https://www.cnblogs.com/nullzx/p/8729425.html)
 [Mysql最左匹配原则](https://blog.csdn.net/sinat_41917109/article/details/88944290)
 [MySQL 覆盖索引详解](https://juejin.im/post/5da5d1966fb9a04e252c94bf)
 [MYSQL索引：对聚簇索引和非聚簇索引的认识](https://blog.csdn.net/alexdamiao/article/details/51934917)
+[什么是索引下推](https://juejin.im/post/5deef343e51d455819022033)
+[浅析MySQL中的Index Condition Pushdown (ICP 索引条件下推)和Multi-Range Read（MRR 索引多范围查找）查询优化](https://yq.aliyun.com/articles/259696)
+[MYSQL索引条件下推的简单测试](https://cloud.tencent.com/developer/article/1068845)
+[MySQL5.6之Index Condition Pushdown(ICP,索引条件下推)](http://mdba.cn/2014/01/21/index-condition-pushdownicp%E7%B4%A2%E5%BC%95%E6%9D%A1%E4%BB%B6%E4%B8%8B%E6%8E%A8/)
+[MySQL索引类型](https://www.cnblogs.com/luyucheng/p/6289714.html)
 
-
-# 索引
-存储引擎使用索引的方式：先  在索引中找到匹配的索引记录，然后返回包含该索引值的数据行。
+[TOC]
 
 # 1. 索引存储类型
 在存储引擎层实现
+
+存储引擎使用索引的方式：先  在索引中找到匹配的索引记录，然后返回包含该索引值的数据行。
 ## 1.1 B树索引
 ##### 扫描
 B树索引避免了全表扫描，而是从索引根节点开始搜索，不断向下寻找(左指针指向值更小的节点，右指针指向值更大的节点)
@@ -202,4 +207,122 @@ SELECT age FROM student WHERE name = '小李'；
 ![覆盖索引](./pic/MySQL索引_覆盖索引.jpg)
 
 
-# 索引条件下推(ICP)
+## 3.4 使用索引扫描做排序
+- order by的顺序和索引顺序一致(但如果第一列指定成常量条件，剩余的索引列仍可以做排序)
+- where中的列和order by中的列的组合需要满足最左匹配原则
+
+# 4. 索引条件下推(ICP)
+当不使用ICP时，存储引擎会根据索引检索出数据，然后将数据返回给MYSQL服务器，由服务器根据where条件对数据进行过滤。当使用ICP时，如果条件中存在索引列，服务器将索引列的判断条件也交给存储引擎，存储引擎根据索引列条件过滤不满足的数据，然后交给服务器。这可以减少存储引擎和磁盘间的I/O和存储引擎和服务器间的数据传输量。
+
+使用场景：
+1. InndoDB的二级索引，因为聚簇索引直接会把数据也加载到内存。二级索引会先去找聚簇索引，然后加载数据。如果二级索引不符合条件，就不用加载对应的聚簇索引和数据到内存了。
+2. 需要范围查找的情况
+3. 二级索引必须是组合索引，并且满足最左匹配原则，当前面的索引列进行范围索引查找，剩余的索引列不能用于索引查找后，经过ICP剩余的索引列将用来当条件过滤查找出来的数据。
+
+### 不使用ICP的过程
+explain的extra会显示“using where”
+①服务器发起读取数据的命令，通过handle接口调取索引读或者全表读(此处将使用索引读)
+②调用索引读进如存储引擎，存储引擎将读取索引树
+③在索引树上使用满足最左匹配原则的二级索引列查找叶子数据(不能被索引的列将不被使用)
+④找到叶子数据后，根据数据中的主键去磁盘表中加载数据到内存
+⑤⑥存储引擎将数据返回给服务器
+⑦⑧服务器收到数据后，进行where条件过滤
+![不使用ICP](./pic/MySQL索引_noneICP.jpg)
+
+
+### 使用ICP的过程
+explain的extra会显示“using index condition”
+```SQL
+set optimizer_switch='index_condition_pushdown=off/on'
+```
+
+![使用ICP](./pic/MySQL索引_ICP.jpg)
+①②同上
+③对查出来的数据进行条件过滤，将不能被利用的索引列当条件过滤数据，不满足条件的将不去磁盘加载数据，因此减少了I/O
+④⑤⑥同上
+⑦⑧收到的数据将是少量的
+
+### 例子
+order_id = 10900是可以直接进行索引查找的，虽然product_name也包含在复合索引中，但是product_name like '%00163e0496af%'是无法使用索引的。利用ICP就是：在利用第一个条件 order_id = 10900 进行索引查找的过程中，同时使用product_name like '%00163e0496af%'这个无法直接使用索引查找的条件进行过滤。
+```SQL
+create index idx_orderid_productname on test_orderdetail(order_id,product_name);
+
+select * from test_orderdetail where order_id = 10900 and product_name like '%00163e0496af%';
+```
+
+
+# 5. 索引的应用类型
+```SQL
+CREATE TABLE table_name[col_name data type]
+[unique|fulltext][index|key][index_name](col_name[length])[asc|desc]
+```
+## 普通索引index | key
+作为基本索引，没有限制
+```SQL
+CREATE INDEX index_name ON table(column(length));
+
+ALTER TABLE table_name ADD INDEX index_name ON (column(length));
+
+CREATE TABLE `table` (
+    `id` int(11) NOT NULL AUTO_INCREMENT ,
+    `title` char(255) CHARACTER NOT NULL ,
+    `content` text CHARACTER NULL ,
+    `time` int(10) NULL DEFAULT NULL ,
+    PRIMARY KEY (`id`),
+    INDEX|key index_name (title(length))
+);
+
+DROP INDEX index_name ON table;
+```
+
+## 唯一索引unique
+列值必须唯一且可以为空，如果是组合索引，那么组合值必须唯一
+```SQL
+CREATE UNIQUE INDEX(key) indexName ON table(column(length));
+
+ALTER TABLE table_name ADD UNIQUE indexName ON (column(length));
+
+CREATE TABLE `table` (
+    `id` int(11) NOT NULL AUTO_INCREMENT ,
+    `title` char(255) CHARACTER NOT NULL ,
+    `content` text CHARACTER NULL ,
+    `time` int(10) NULL DEFAULT NULL ,
+    UNIQUE indexName (title(length))
+);;
+```
+## 主键索引
+一个表只能有一个主键索引，主键索引值唯一且不能为空
+```SQL
+CREATE TABLE `table` (
+    `id` int(11) NOT NULL AUTO_INCREMENT ,
+    `title` char(255) NOT NULL ,
+    PRIMARY KEY (`id`)
+);
+```
+## 组合索引
+在多个字段上创建索引，需要满足最左匹配原则
+```SQL
+ALTER TABLE `table` ADD INDEX name_city_age (name,city,age); 
+```
+
+## 全文索引fulltext
+- 只能应用于char、varchar、text，配合match against使用
+- 先将数据插入没有fulltext的表，再创建fulltext索引，比将数据插入有fulltext索引的表速度快
+```SQL
+CREATE TABLE `table` (
+    `id` int(11) NOT NULL AUTO_INCREMENT ,
+    `title` char(255) CHARACTER NOT NULL ,
+    `content` text CHARACTER NULL ,
+    `time` int(10) NULL DEFAULT NULL ,
+    PRIMARY KEY (`id`),
+    FULLTEXT (content)
+);
+
+ALTER TABLE article ADD FULLTEXT index_content(content);
+
+CREATE FULLTEXT INDEX index_content ON article(content);
+
+SELECT * FROM `student` WHERE MATCH(`name`) AGAINST('聪')
+```
+
+
