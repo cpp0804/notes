@@ -85,3 +85,6 @@ select * from tb_test where id = 1 lock in share mode;
 
 # 第三章 服务器性能剖析
 [服务器性能剖析](./服务器性能剖析.md)
+
+# 第四章 Schema与数据类型优化
+[Schema与数据类型优化](./Schema与数据类型优化.md)
