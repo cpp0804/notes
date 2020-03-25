@@ -9,6 +9,10 @@
 [MYSQL索引条件下推的简单测试](https://cloud.tencent.com/developer/article/1068845)
 [MySQL5.6之Index Condition Pushdown(ICP,索引条件下推)](http://mdba.cn/2014/01/21/index-condition-pushdownicp%E7%B4%A2%E5%BC%95%E6%9D%A1%E4%BB%B6%E4%B8%8B%E6%8E%A8/)
 [MySQL索引类型](https://www.cnblogs.com/luyucheng/p/6289714.html)
+[干货篇：一篇文章让你——《深入解析MySQL索引原理 》](https://zhuanlan.zhihu.com/p/70898706)⚠️
+[MySQL——索引实现原理](https://www.lagou.com/lgeduarticle/66657.html)
+[数据存储 1：数据库索引的原理及使用策略](https://crazyfzw.github.io/2018/07/18/RDBMS-INDEX/)
+[探究InnoDB数据页内部行的存储方式](https://www.jianshu.com/p/aa67d757e591)⚠️
 
 [TOC]
 
@@ -170,7 +174,7 @@ create table test(
 
 非叶节点又叫索引页，存放索引值和指向数据页的指针。
 
-InnoDB主键索引(聚簇索引)如下图所示：每个叶子节点包含主键值、事务ID、DB_ROLL_PTR以及剩余的列值
+InnoDB主键索引(聚簇索引)如下图所示：每个叶子节点包含主键值、事务ID、DB_ROLL_PTR以及剩余的列值。数据文件本身就是索引文件
 ![主键索引](./pic/MySQL索引_InnoDB主键索引.jpeg)
 
 InnoDB二级索引(辅助索引、非聚簇索引)如下图所示：每个叶子节点包含二级索引列值、主键值，InnoDB在更新时无需更新二级索引中的指针。如果索引的是二级索引，那么需要先从二级索引树中找到对应的主键，然后从主键的索引树中找出记录。
@@ -196,7 +200,7 @@ InnoDB的索引B+树 VS MyISAM的索引B+树
 ![InnoDB的索引B+树 VS MyISAM的索引B+树](./pic/MySQL索引_聚簇VS非聚簇.jpeg)
 
 ## 3.3 覆盖索引
-覆盖索引是指一个索引包含查询和条件需要的字段，只能使用B+树实现。例如当有一个索引(a,b),并且只访问这两列时，就是一个覆盖索引
+覆盖索引是指一个非主键索引包含查询和条件需要的字段，只能使用B+树实现。例如当有一个索引(a,b),并且只访问这两列时，就是一个覆盖索引
 
 当发起一个覆盖索引的请求时，explain的extra列会显示"using index"，key中代表的就是覆盖索引。
 
