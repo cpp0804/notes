@@ -1,5 +1,5 @@
 
-##### 1.参考博客
+## 参考博文
 [超全面的MySQL语句加锁分析](https://blog.csdn.net/bjweimengshu/article/details/90056126)
 [全面了解mysql锁机制（InnoDB）与问题排查](https://www.lagou.com/lgeduarticle/59329.html)⚠️
 [mysql 索引加锁分析](https://www.jianshu.com/p/13f5777966dd)⚠️

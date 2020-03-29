@@ -1,20 +1,22 @@
-##### 参考博文
+## 参考博文
 [MySQL中数据类型介绍](https://blog.csdn.net/bzhxuexi/article/details/43700435)
 [MySQL数据类型--浮点数类型和定点数类型](https://blog.csdn.net/u011794238/article/details/50902405)
 [MySQL数据类型--字符串类型](https://blog.csdn.net/u011794238/article/details/50953414)
 [MySQL中文文档](https://www.docs4dev.com/docs/zh/mysql/5.7/reference/blob.html)
 [MySQL 中 datetime 和 timestamp 的区别与选择](https://segmentfault.com/a/1190000017393602)
 
-# 1. Schema与数据类型优化
-## 1.1 数据类型优化
-## 1.1.1 整数类型
+[TOC]
+
+
+# 1. 数据类型优化
+## 1.1 整数类型
 bool = tinyint(1)
 
 可以存储的范围值从-2^(N-1)^ ~ 2^(N-1)^-1 (N是存储的位数)
 
 为整数类型指定宽度，例如int(11)没有实际意义，他只限制了客户端工具显示整数的个数，对存储和计算来说没有区别
 ![整数类型](./pic/Schema与数据类型优化_整数类型.jpeg)
-## 1.1.2 实数类型
+## 1.2 实数类型
 decmial只是一种存储格式，cpu并不支持decmial计算，需求MYSQL服务器自行实现decmial。计算中decimal会转为double，需要额外的存储空间和计算开销，只有在需要精确计算时才使用。
 
 decimal(18,9)表示小数点左右两边相加最大可以存18位数字，右边小数位最多可以存9位数字。小数精度超过限制的会四舍五入。float和double同规则
@@ -24,7 +26,7 @@ decimal(18,9)表示小数点左右两边相加最大可以存18位数字，右�
 FLOAT	|4
 DOUBLE	|8
 DECIMAL	|每9位数据占用4byte，小数点本身1byte，decimal(18,9)占用4+1+4=9byte
-## 1.1.3 字符串类型
+## 1.3 字符串类型
 ### char VS varchar
 ![char VS varchar](./pic/Schema与数据类型优化_charVSvarchar.jpeg)
 
@@ -112,7 +114,7 @@ mysql> SELECT * FROM t;
 | 2       |
 +---------+
 ```
-## 1.1.4 日期和时间类型
+## 1.4 日期和时间类型
 | 类型 | 占据字节 | 表示形式 | 时区 | 表示范围 | 默认值 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | datetime | 8 字节 | yyyy-mm-dd hh:mm:ss | 与时区无关，不会根据当前时区进行转换 | '1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999' | null |
@@ -151,11 +153,12 @@ mysql允许插入的数据形式：
 2019-6-11——2019-6-12-5
 ![](https://intranetproxy.alipay.com/skylark/lark/0/2019/jpeg/210834/1560224566348-3dc490a7-98b1-4fe6-a99f-71e9d3d3080a.jpeg#align=left&display=inline&height=203&originHeight=203&originWidth=454&size=0&status=done&width=454)
 
-## 1.1.5 位数据类型
+## 1.5 位数据类型
 
-## 1.1.6 选择标识符
+## 1.6 选择标识符
 避免使用字符串类型作为标识字段的类型
-## 1.2 Schema设计中的陷阱
+
+# 2. Schema设计中的陷阱
 1. 一个表中有太多的列
 
 服务器层向存储引擎获取数据时是通过行缓冲，而放入行缓冲的数据是经过编码的，所以服务器需要将行缓冲中的内容解码成各个列。如果一个表中列非常的多，这个解码过程的代价是很大的
@@ -166,13 +169,14 @@ mysql允许插入的数据形式：
 
 3. 
 
-## 1.3 范式和反范式
+# 3. 范式和反范式
 第一范式：原子性
 第二范式：非主属性完全依赖主属性，不存在部分依赖
 第三范式：非主属性间不存在传递依赖
 
 有时候利用反范式减少表之间的关联，增加一些必要的冗余字段会使得查询变得更加高效。
-## 1.4 缓存表和汇总表
+
+# 4. 缓存表和汇总表
 使用汇总表保存一些汇总的数据，并且定期更新而不是实时更新，在损失一定实时性的情况下可以对原表减少一些压力。例如在一个繁忙的网站计算每小时的消息数量，如果时刻对消息表进行计算，他的压力会非常大
 
 使用缓存表从主表中缓存部分列数据，缓存表可以使用存储结构更小的存储引擎
@@ -211,7 +215,7 @@ create table count(
 insert into count(day,slot,cnt) values(current_date(),rand()*100,1) on duplicate key update cnt=cnt+1;
 ```
 
-## 1.5 加快alter table操作的速度
+# 5. 加快alter table操作的速度
 MySQL执行大部分alter table的过程是创建一张新表，将旧表数据复制到新表，再删除旧表。
 
 为列改变默认值，可以选择alter column而不是modify column，alter column将直接修改frm文件

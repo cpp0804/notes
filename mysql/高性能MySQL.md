@@ -1,7 +1,9 @@
-[TOC]
-##### 参考文献
+
+## 参考博文
 [select * from user这条SQL语句背后藏着哪些不可告人的秘密？](https://www.geek-share.com/detail/2788755980.html)
 [mysql中SQL执行过程详解](https://www.liangzl.com/get-article-detail-125197.html)
+
+[TOC]
 
 # 第一章 MYSQL架构与历史
 ## 1.1 MySQL逻辑架构
@@ -66,6 +68,11 @@ select * from tb_test where id = 1 lock in share mode;
 ## 1.4 多版本并发控制(MVCC)
 [MVCC](./MVCC.md)
 
+保存数据库某时间的快照，一个事务从开始到结束读的内容都是一样的。做到不加锁也能处理读写冲突。行锁的变种。
+
+通过3个隐式字段，undo日志，read view实现。
+
+
 ## 1.5 mysql命令行
 [mysql命令行](./MySQL命令行.md)
 
@@ -84,7 +91,13 @@ select * from tb_test where id = 1 lock in share mode;
 [MySQL基准测试](./MySQL基准测试.md)
 
 # 第三章 服务器性能剖析
+
 [服务器性能剖析](./服务器性能剖析.md)
+
+测量服务器的时间花在了哪里
+
+性能：响应时间，完成某件任务需要花费的时间
+
 
 # 第四章 Schema与数据类型优化
 [Schema与数据类型优化](./Schema与数据类型优化.md)
@@ -97,3 +110,6 @@ select * from tb_test where id = 1 lock in share mode;
 
 # 第七章 MySQL高级特性
 [MySQL高级特性](./MySQL高级特性.md)
+
+# 第十章 复制
+[复制](./复制.md)

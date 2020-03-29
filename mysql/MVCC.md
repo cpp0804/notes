@@ -1,17 +1,16 @@
-[TOC]
-# MVCC多版本并发控制
-#### 博文参考
+
+## 参考博文
 [一篇文章带你掌握mysql的一致性视图（MVCC）](https://www.cnblogs.com/luozhiyun/p/11216287.html)
 [【MySQL笔记】正确的理解MySQL的MVCC及实现原理](https://blog.csdn.net/SnailMann/article/details/94724197)
 
-保存数据库某时间的快照，一个事务从开始到结束读的内容都是一样的。做到不加锁也能处理读写冲突。行锁的变种。
+[TOC]
 
-通过3个隐式字段，undo日志，read view实现。
-### 1.4.1 两种读
-##### 1. 当前读
+
+# 1. 两种读
+## 1.1 当前读
 类似select in share mode(共享锁), select for update、update、insert、delete(排它锁)等都是当前读，读的都是最新的数据，读取时不允许其他事务更改数据。
 
-##### 2. 快照读
+## 1.2 快照读
 类似普通select，在读取时不加锁。读到的不一定是最新数据，可能是历史数据。MVCC就是解决快照读的问题。
 
 下面介绍InnoDB简化的MVCC实现：
@@ -39,7 +38,7 @@
 
 update其实是插入新的一行，将当前系统版本号作为新行的创建时间以及作为旧行的删除时间
 
-### 1.4.2 三个隐式字段
+# 2. 三个隐式字段
 (1)DB_TRX_ID
 
 最近修改事务ID：最后一次修改该记录的事务ID
@@ -86,7 +85,7 @@ undo log：同一记录的undo log会形成一个版本链表，最新的记录�
 ---|---|---|---|---|---|
 0x124465|tom|24|1|1|null
 
-### 1.4.3 read view(读视图)
+# 3. read view(读视图)
 read view是当某个事务执行快照读的时候，会生成数据库的当前快照，维护当前活跃的事务。将根据read view来判断事务能读到哪个版本的数据(可能是最新的，也可能是undo log里的)。判断方法是拿read view中被访问记录的DB_TRX_ID和read view中其他事务的事务ID作比较，如果满足可见性条件，就可以访问。如果不满足，则拿记录的DB_ROLL_PTR取undo log中取，直到满足可见性条件。
 
 read view有四个字段：
