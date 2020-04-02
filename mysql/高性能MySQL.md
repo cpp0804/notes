@@ -113,3 +113,4 @@ select * from tb_test where id = 1 lock in share mode;
 
 # 第十章 复制
 [复制](./复制.md)
+复制解决的问题是保持主从数据库的数据一致性
