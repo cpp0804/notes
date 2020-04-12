@@ -99,7 +99,7 @@ read view有四个字段：
 
 1. 当要访问记录的最新DB_TRX_ID等于creator_trx_id，说明当前事务要访问被他最后一次修改过的记录，该版本记录可以被访问。
 2. 当要访问记录的DB_TRX_ID小于min_trx_id，说明生成该版本的事务在当前事务创建前已经提交，该版本记录可以被访问。(DB_TRX_ID小于min_trx_id一定保证可以被访问，但是DB_TRX_ID大于min_trx_id的也有可能被访问，图中的指针不表示大小关系)
-3. 当要访问记录的DB_TRX_ID大于max_trx_id，说明生成该版本的事务在当前事务创建后才开始，该版本记录可以被访问。(这种情况只适用于RC的情况)
+3. 当要访问记录的DB_TRX_ID大于max_trx_id，说明生成该版本的事务在当前事务创建后才开始，该版本记录不可以被访问。(这种情况只适用于RC的情况，RR只在第一次select生成一个readview，所以在他后面的事务他是看不见的)
 4. 如果被访问记录的DB_TRX_ID介于min_trx_id和max_trx_id之间，如果DB_TRX_ID在m_ids列表中，表示生成该版本的事务还没有提交，不能访问；如果不在说明生成该版本的事务已经提交，可以被访问
 
 
@@ -127,6 +127,8 @@ commit;|
 记录的版本号变化情况：
 ![事务例子](./pic/MVCC_事务例子.jpg)
 
+不可能同时存在两个未提交的事务都在版本链中，版本链的头部一定是已提交或未提交的事务。
+
 对于RR和RC两种情况，read view生成时间会有所不同
 ##### RC 每次读取数据都生成一次read view
 ```
@@ -134,13 +136,13 @@ commit;|
 BEGIN;
 
 # SELECT1：Transaction 100、200未提交
+# 此时事务B还没提交，内存中的版本链是200——90
 select k from t where id=1 ; # 得到值为1
 
 这个SELECT1的执行过程如下：
 
 1. 在执行SELECT语句时会先生成一个ReadView，ReadView的m_ids列表的内容就是[100, 200]，min_trx_id为100，max_trx_id为201，creator_trx_id为0。
-2. 然后从版本链中挑选可见的记录，最新的版本trx_id值为100，在m_ids列表内，所以不符合可见性要求
-3. 下一个版本的trx_id值也为200，也在m_ids列表内，所以也不符合要求，继续跳到下一个版本。
+2. 然后从版本链中挑选可见的记录，最新的版本trx_id值为200，在m_ids列表内，所以不符合可见性要求
 4. 下一个版本的trx_id值为90，小于ReadView中的min_trx_id值100，所以这个版本是符合要求的。
 ```
 把事务B的事务提交一下，然后再到刚才使用READ COMMITTED隔离级别的事务中继续查找
@@ -156,7 +158,7 @@ SELECT * FROM hero WHERE number = 1; # 得到值为2
 
 这个SELECT2的执行过程如下：
 
-1. 在执行SELECT语句时会又会单独生成一个ReadView，该ReadView的m_ids列表的内容就是[100]（事务id为200的那个事务已经提交了，所以再次生成快照时就没有它了），min_trx_id为100，max_trx_id为101，creator_trx_id为0。
+1. 在执行SELECT语句时会又会单独生成一个ReadView，该ReadView的m_ids列表的内容就是[100]（事务id为200的那个事务已经提交了，所以再次生成快照时就没有它了），min_trx_id为100，max_trx_id为201，creator_trx_id为0。
 2. 然后从版本链中挑选可见的记录，从图中可以看出，最新版本trx_id值为100，在m_ids列表内，所以不符合可见性要求
 3. 下一个版本的trx_id值为200,小于max_trx_id，并且不在m_ids列表中，所以可见，返回的值为2
 ```
@@ -171,8 +173,7 @@ SELECT * FROM hero WHERE number = 1; # 得到值为1
 这个SELECT1的执行过程如下：
 
 1. 在执行SELECT语句时会先生成一个ReadView，ReadView的m_ids列表的内容就是[100, 200]，min_trx_id为100，max_trx_id为201，creator_trx_id为0。
-2. 然后从版本链中挑选可见的记录，该版本的trx_id值为100，在m_ids列表内，所以不符合可见性要求
-3. 下一个版本该版本的trx_id值为200，也在m_ids列表内，所以也不符合要求，继续跳到下一个版本。
+2. 然后从版本链中挑选可见的记录，该版本的trx_id值为200，在m_ids列表内，所以不符合可见性要求
 4. 下一个版本的trx_id值为90，小于ReadView中的min_trx_id值100，所以这个版本是符合要求的。
 ```
 之后，我们把事务B的事务提交一下

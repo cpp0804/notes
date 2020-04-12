@@ -60,7 +60,7 @@ SELECT * FROM hero WHERE number = 8 FOR UPDATE;
 ![](./pic/MySQL语句加锁分析_2.1.2.jpg)
 
 ##### 2.1.3 UPDATE
-没有更新二级索引，只更新以及索引的情况下，和SELECT ... FOR UPDATE相同，给number=8的记录加X锁
+没有更新二级索引，只更新一级索引的情况下，和SELECT ... FOR UPDATE相同，给number=8的记录加X锁
 ```SQL
 UPDATE hero SET country = '汉' WHERE number = 8;
 ```

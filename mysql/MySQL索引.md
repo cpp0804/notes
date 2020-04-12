@@ -19,7 +19,7 @@
 # 1. 索引存储类型
 在存储引擎层实现
 
-存储引擎使用索引的方式：先  在索引中找到匹配的索引记录，然后返回包含该索引值的数据行。
+存储引擎使用索引的方式：先在索引中找到匹配的索引记录，然后返回包含该索引值的数据行。
 ## 1.1 B树索引
 ##### 扫描
 B树索引避免了全表扫描，而是从索引根节点开始搜索，不断向下寻找(左指针指向值更小的节点，右指针指向值更大的节点)
@@ -60,8 +60,8 @@ select * from table_name where a = '1' and c = '3'
 3. 列前缀匹配：针对第一个索引列：索引列如果是字符型的，比较顺序是先比较第一个字母，然后在比较第二个字母。。。
 ```SQL
 select * from table_name where a like 'As%'; //前缀都是排好序的，走索引查询
-select * from table_name where  a like '%As'//全表查询
-select * from table_name where  a like '%As%'//全表查询
+select * from table_name where a like '%As'//全表查询
+select * from table_name where a like '%As%'//全表查询
 ```
 4. 范围值匹配：针对第一个索引列
 ```SQL
@@ -155,7 +155,7 @@ alter table city add key(city(7));
 但是无法使用前缀索引做order by和group by，还有无法做覆盖扫描
 
 #### 2.3 多列索引
-为没个列创建单个索引并不是好策略
+为每个列创建单个索引并不是好策略
 
 #### 2.4 选择合适的索引列顺序
 

@@ -37,8 +37,7 @@ mysql>show tables;
 6 rows in set (0.00 sec)
 
 //查看account表的数据
-mysql> select * from account
-    -> ;
+mysql> select * from account;
 +----+----------+-------+
 | id | username | money |
 +----+----------+-------+

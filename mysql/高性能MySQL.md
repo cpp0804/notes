@@ -68,6 +68,8 @@ select * from tb_test where id = 1 lock in share mode;
 ## 1.4 多版本并发控制(MVCC)
 [MVCC](./MVCC.md)
 
+MVCC实现了select读时不加锁，如果做所有操作都加锁，那么语句全变成串行的了。
+
 保存数据库某时间的快照，一个事务从开始到结束读的内容都是一样的。做到不加锁也能处理读写冲突。行锁的变种。
 
 通过3个隐式字段，undo日志，read view实现。
