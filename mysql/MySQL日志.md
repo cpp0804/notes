@@ -40,7 +40,7 @@ mysql> show variables like 'log_error%';
 所以说通过二进制日志可以查询mysql数据库中进行了哪些变化。一般大小体积上限为1G
 
 ### 写入时间
-对于事务表，二进制日志对每个查询的记录都先写入缓存，等事务提交了一次性写入磁盘。
+对于事务表，二进制日志对每个查询的记录都先写入缓存，在事务提交前一次性写入磁盘。
 对于非事务表，二进制日志对每个查询的记录在语句执行完后就写入磁盘。
 
 ### 记录格式
@@ -51,3 +51,21 @@ mysql> show variables like 'log_error%';
 
 # 存储引擎层日志(只有InnoDB有)
 ## 5. 事务日志
+### redo log重做日志：修改后的数据
+redo log 记录的是数据物理页的修改(而不是像二进制一样记录具体被修改的数据)，同一事务中对一个记录的多次修改只记录最后一个版本
+
+redo log包含两部分：
+1）内存中的日志缓冲(redo log buffer):易失性
+2）磁盘上的重做日志文件(redo log file):持久的
+
+写入缓存时间：
+在语句执行前，会将修改后的数据记录在redo log buffer中
+
+写入磁盘时间：通过innodb_flush_log_at_trx_commit的值可以自定义什么时候将redo log buffer的数据写入磁盘中：
+>当值为0：不在事务提交前写入，而是每秒将redo log buffer中的数据写入os buffer中并调用fsync()刷到redo log file中
+
+>当值为1：事务每次提交前都将redo log buffer中的数据写入os buffer中并调用fsync()刷到redo log file中
+
+>当值为2：事务每次提交，将redo log buffer中的数据写入os buffer中，并每秒调用fsync()刷到redo log file中
+
+![]()
