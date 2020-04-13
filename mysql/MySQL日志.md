@@ -68,4 +68,4 @@ redo log包含两部分：
 
 >当值为2：事务每次提交，将redo log buffer中的数据写入os buffer中，并每秒调用fsync()刷到redo log file中
 
-![]()
+![redolog刷回磁盘](./pic/MySQL日志_redolog刷回磁盘.png)

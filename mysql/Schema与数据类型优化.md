@@ -119,6 +119,9 @@ mysql> SELECT * FROM t;
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | datetime | 8 字节 | yyyy-mm-dd hh:mm:ss | 与时区无关，不会根据当前时区进行转换 | '1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999' | null |
 | timestamp | 4 字节 | yyyy-mm-dd hh:mm:ss | 与时区有关，查询时自动检索当前时区并进行转换。比如，存储的是1970-01-01 00:00:00，客户端是北京，那么就加8个时区的小时1970-01-01 08:00:00 | '1970-01-01 00:00:01.000000' to '2038-01-19 03:14:07.999999' | 当前时间(CURRENT_TIMESTAMP）
+date|3字节
+year|1字节
+time|3字节
 
 
 mysql允许插入的数据形式：
@@ -157,6 +160,66 @@ mysql允许插入的数据形式：
 
 ## 1.6 选择标识符
 避免使用字符串类型作为标识字段的类型
+
+## 1.7 类型属性
+### unsigned
+将数字类型无符号化，MySQL对unsigned类型操作的返回结果都是unsigned
+```SQL
+mysql> create table t(a int unsigned, b int unsigned);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into t select 1,2;
+Query OK, 1 row affected (0.01 sec)
+Records: 1  Duplicates: 0  Warnings: 0
+
+//两个无符号相减的结果是无符号
+/*结果都是0xFFFFFFFF，只是0xFFFFFFFF可以代表两种值：
+对于无符号的整型值，其是整型数的最大值，即4294967295；
+对于有符号的整型数来说，第一位代表符号位，如果是1，表示是负数，这时应该是取反加1得到负数值，即-1
+*/
+mysql> select a-b from t;
+ERROR 1690 (22003): BIGINT UNSIGNED value is out of range in '(`spring-class`.`t`.`a` - `spring-class`.`t`.`b`)'
+
+mysql>set sql_mode='no_unsigned_subtraction';
+mysql> select a-b from t;
+//返回-1
+```
+### zerofill
+一个用于显示的属性，如果数字的宽度不满足设置的宽度，将在数字前面填充0，但是MySQL中实际存储还是原来的数字
+```SQL
+mysql> show create table t;
++-------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table | Create Table                                                                                                                                            |
++-------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| t     | CREATE TABLE `t` (
+  `a` int(10) unsigned DEFAULT NULL,
+  `b` int(10) unsigned DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin |
++-------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from t\G;
+*************************** 1. row ***************************
+a: 1
+b: 2
+1 row in set (0.00 sec)
+
+mysql> alter table t change column a a int(4) unsigned zerofill;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from t\G;
+*************************** 1. row ***************************
+a: 0001
+b: 2
+1 row in set (0.00 sec)
+
+mysql> select a,hex(a) from t\G;
+*************************** 1. row ***************************
+a: 0001
+hex(a): 1
+1 row in set (0.00 sec)
+```
 
 # 2. Schema设计中的陷阱
 1. 一个表中有太多的列
