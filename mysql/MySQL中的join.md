@@ -3,6 +3,7 @@
 [Mysql Join语法解析与性能分析](https://www.cnblogs.com/beginman/p/3754322.html)
 [关于 MySQL LEFT JOIN 你可能需要了解的三点](https://www.oschina.net/question/89964_65912)
 
+[TOC]
 
 ```SQL
 mysql> select A.id,A.name,B.name from A,B where A.id=B.id;
@@ -18,7 +19,9 @@ mysql> select A.id,A.name,B.name from A,B where A.id=B.id;
 ```
 
 # 内连接
-inner join | join：返回满足on的列条件的行，只筛选两个表同时满足条件的行
+inner join | join：返回满足on的列条件的行，只筛选两个表同时满足条件的行。指定过滤条件在ON子句和WHERE子句中是没有任何区别的
+
+如果INNER JOIN后不跟ON子句，也是可以通过语法解析器的，这时INNER JOIN等于CROSS JOIN，即产生笛卡儿积
 ![join](./pic/MySQL中的join_join.png)
 ```SQL
 mysql> select * from A inner join B on A.name = B.name;
@@ -29,10 +32,38 @@ mysql> select * from A inner join B on A.name = B.name;
 |  3 | Ninja  |  4 | Ninja  |
 +----+--------+----+--------+
 ```
+以下三个语句等价：
+```SQL
+select a.emp_no,first_name,last_name 
+from employees a
+[inner] join dept_manager b
+on a.emp_no=b.emp_no
+where dept_no='1001';
+
+select a.emp_no,first_name,last_name 
+from employees a
+[inner] join dept_manager b
+on a.emp_no=b.emp_no
+and dept_no='1001';
+
+select a.emp_no,first_name,last_name 
+from employees a，dept_manager b
+where a.emp_no=b.emp_no and dept_no='1001';
+
+//如果ON子句中的列具有相同的名称，可以使用USING子句来进行简化
+select a.emp_no,first_name,last_name 
+from employees a
+[inner] join dept_manager b
+using(emp_no)
+where dept_no='1001';
+```
 
 # 外连接
 ## 左外连接
 left join | left outer join：返回左表所有行，右表满足条件的行，右表不满足条件的返回null
+
+和内连接不同的是，外连接必须指定on语句
+
 ![left_join_结果](./pic/MySQL中的join_leftjoin.png)
 ```SQL
 mysql> select * from A left join B on A.name = B.name;
@@ -71,6 +102,16 @@ mysql> select * from A left join B on A.name=B.name where A.id is not null and B
 +----+--------+------+--------+
 2 rows in set (0.00 sec)
 ```
+
+使用外连接解决最小确实值的问题
+```SQL
+//1,2,3,5,6,7,9
+select min(x.a+1)
+from num x
+left join num y
+on x.a+1=y.a
+where y.a is null;
+```
 ## 右外连接
 right join | right outer join：返回右表所有行，左表满足条件的行，左表不满足条件的返回null
 ```SQL
@@ -85,8 +126,43 @@ mysql> select * from A right join B on A.name = B.name;
 +------+--------+----+-------------+
 4 rows in set (0.00 sec)
 ```
+
+# 自然连接
+自然连接默认的对两表中相同的列进行匹配，就是对外连接和内连接省去了自己指定on条件
+```SQL
+select a.emp_no,first_name,last_name 
+from employees a
+[inner] join dept_manager b
+on a.emp_no=b.emp_no
+
+//以下等价
+select a.emp_no,first_name,last_name 
+from employees a
+natural join dept_manager b
+```
+
+# STRAIGHT_JOIN
+ STRAIGHT_JOIN会强制先读取左边的表作为驱动表
+ ```SQL
+select a.emp_no,first_name,last_name 
+from employees a
+[inner] join dept_manager b
+on a.emp_no=b.emp_no
+ ```
+ explain结果看到先读取表b，然后再去匹配表a
+ ![未使用STRAIGHT_JOINexplain](./pic/MySQL中的join_未使用STRAIGHT_JOINexplain.png)
+
+```SQL
+select a.emp_no,first_name,last_name 
+from employees a
+straight join dept_manager b
+on a.emp_no=b.emp_no
+```
+![使用STRAIGHT_JOINexplain](./pic/MySQL中的join_使用STRAIGHT_JOINexplain.png)
+
+
 # 笛卡尔积
-cross join：得到两个表的乘积
+cross join：得到两个表的乘积。若左表有m行数据，右表有n行数据，则CROSS JOIN将返回m*n行的表
 
 inner join 不指定on得到的结果和cross join相同
 ```SQL
@@ -112,9 +188,24 @@ mysql> select * from A cross join B;
 |  4 | Spaghetti |  4 | Ninja       |
 +----+-----------+----+-------------+
 16 rows in set (0.00 sec)
-
-#再执行：mysql> select * from A inner join B; 试一试
 ```
+CROSS JOIN的一个用处是快速生成重复测试数据
+
+CROSS JOIN的另一个用处是可以作为返回结果集的行号
+方法一：
+```SQL
+select emp_no,dept_no 
+(select count(1) from dept_emp t2 where t2.emp_no<=t1.emp_no) as row_num from dept_emp t1;
+```
+可以看到首先会扫描t1得到全部数据，然后将每行数据和t2联接查询，对每行数据都要执行一次t2子查询的扫描操作
+![crossjoin行号方法一](./pic/MySQL中的join_crossjoin行号方法一.png)
+
+方法二：使用只有一行数据的表和dept_emp进行笛卡尔积，1*N=N
+```SQL
+select emp_no,dept_no,@a:=@a+1 as row_numm
+from dept_emp,(select @a:=0) as t;
+```
+![crossjoin行号方法二](./pic/MySQL中的join_crossjoin行号方法二.png)
 
 # on VS where
 ```SQL
@@ -209,6 +300,21 @@ mysql> SELECT * FROM product LEFT JOIN product_details
 使用两个表的字段进行条件连接，但是只返回一个表的数据。返回左表的数据叫左半semi join,返回右表的数据叫右半semi join。
 
 通常用在in和exists关键字中，
+
+# 滑动订单问题
+滑动订单问题是指为每个月返回上一年度（季度或月度等）的滑动订单数，即为每个月份N，返回从月份N-11到月份N的订单总数
+![滑动订单问题数据](./pic/MySQL中的join_滑动订单问题数据.png)
+
+每个月返回上一年度的滑动订单总数
+```SQL
+select date_format(a.ordermonth,'%Y%m') as frommonth,date_format(b.ordermonth,'%Y%m') as tomonth,sum(c.ordernum) as orders
+from monthlyorders a 
+inner join monthlyorders b on date_add(a.ordermonth,interval 11 month)=b.ordermonth
+inner join monthlyorders c on c.ordermonth between a.ordermonth and b.ordermonth
+group by a.ordermonth,b.ordermonth;
+```
+![滑动订单问题结果](./pic/MySQL中的join_滑动订单问题结果.png)
+
 
 # 性能分析
 TODO
