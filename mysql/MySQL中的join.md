@@ -205,5 +205,10 @@ mysql> SELECT * FROM product LEFT JOIN product_details
 1 row in set (0.01 sec)
 ```
 
+# semi join
+使用两个表的字段进行条件连接，但是只返回一个表的数据。返回左表的数据叫左半semi join,返回右表的数据叫右半semi join。
+
+通常用在in和exists关键字中，
+
 # 性能分析
 TODO
