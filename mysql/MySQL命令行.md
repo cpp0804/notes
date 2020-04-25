@@ -116,3 +116,9 @@ mysql> insert into newtable select * from oldtable where id betwenn x and y;
 mysql> commit;
 ```
 
+# 3. MySQL部分命令
+```SQL
+//手动启动MySQL
+sudo -u _mysql /usr/local/mysql/bin/mysqld
+```
+

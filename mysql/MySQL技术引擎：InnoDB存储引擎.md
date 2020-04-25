@@ -24,14 +24,16 @@ chenpeipeideMacBook-Pro:~ chenpeipei$ ps -ef | grep mysqld
   501  9301  9293   0  2:45下午 ttys002    0:00.00 grep mysqld
 ```
 
-当要启动MySQL(实例时)，MySQL数据库会去读取配置文件，根据配置文件的参数来启动数据库实例
-```SQL
+当要启动MySQL(实例时)，MySQL数据库会去读取配置文件，根据配置文件的参数来启动数据库实例 ([文件](./文件.md))
+```shell
 //查看当MySQL数据库实例启动时，会在哪些位置查找配置文件
 chenpeipeideMacBook-Pro:~ chenpeipei$ mysql --help | grep my.cnf
                       order of preference, my.cnf, $MYSQL_TCP_PORT,
 //MySQL会按照下面的顺序读取配置文件。如果有同名配置，以读取到的最后一个配置文件中的参数为准
 /etc/my.cnf /etc/mysql/my.cnf /usr/local/mysql/etc/my.cnf ~/.my.cnf 
+```
 
+```SQL
 //我们创建的数据库文件所在的位置
 mysql> show variables like 'datadir';
 ERROR 2006 (HY000): MySQL server has gone away
@@ -66,25 +68,24 @@ mysql> select * from user;
 
 
 # 3. 文件
-[](./文件.md)
+[文件](./文件.md)
 
 
 # 4. 表
-
+[表](./表.md)
 
 
 
 # 5. 索引与算法
-
+[MySQL索引](./MySQL索引.md)
 
 
 # 6. 锁
-
+[锁](./锁.md)
 
 
 # 7. 事务
-
-
+[MySQL事务](./MySQL事务.md)
 
 
 # 8. 备份与恢复

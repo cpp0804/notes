@@ -130,7 +130,7 @@ commit;|
 不可能同时存在两个未提交的事务都在版本链中，版本链的头部一定是已提交或未提交的事务。
 
 对于RR和RC两种情况，read view生成时间会有所不同
-##### RC 每次读取数据都生成一次read view
+### RC 每次读取数据都生成一次read view
 ```
 # 使用READ COMMITTED隔离级别的事务
 BEGIN;
@@ -162,7 +162,7 @@ SELECT * FROM hero WHERE number = 1; # 得到值为2
 2. 然后从版本链中挑选可见的记录，从图中可以看出，最新版本trx_id值为100，在m_ids列表内，所以不符合可见性要求
 3. 下一个版本的trx_id值为200,小于max_trx_id，并且不在m_ids列表中，所以可见，返回的值为2
 ```
-##### RR 在第一次读取数据时生成一个ReadView
+### RR 在第一次读取数据时生成一个ReadView
 ```SQL
 # 使用REPEATABLE READ隔离级别的事务
 BEGIN;
@@ -220,3 +220,103 @@ mysql> SELECT * FROM hero WHERE number = 30;
 1 row in set (0.01 sec)
 ```
 在RR下T1第一次select生成一个read view，查询number=30的记录为empty set，然后T2插入了number=30的记录并提交，然后T1顺势update了这条记录，然后这条记录的DB_TRX_ID就变成了T1。然后T1再次select，就查询到了number=30的记录，产生幻读。
+
+# RC VS RR
+![RCVSRR例子](./pic/MVCC_RCVSRR例子.png)
+
+```SQL
+mysql> select * from account;
++----+-------------+-------+
+| id | username    | money |
++----+-------------+-------+
+|  1 | jack        |   250 |
+|  2 | mary        | 10900 |
+|  3 | jack        |   300 |
+|  4 | test        |   500 |
+|  5 | a           |  1000 |
+| 14 | anothertest |  1234 |
++----+-------------+-------+
+6 rows in set (0.00 sec)
+```
+
+1. 首先会话A执行select：
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from account where id=14;
++----+-------------+-------+
+| id | username    | money |
++----+-------------+-------+
+| 14 | anothertest |  1234 |
++----+-------------+-------+
+1 row in set (0.00 sec)
+```
+
+2. 然后会话B执行update但不提交
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update account set id=15 where id=14;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+```
+
+3. 然后会话A再次执行select：因为B没有提交，所以不管是RC和RR，select的结果都一样
+```SQL
+mysql> select * from account where id=14;
++----+-------------+-------+
+| id | username    | money |
++----+-------------+-------+
+| 14 | anothertest |  1234 |
++----+-------------+-------+
+1 row in set (0.00 sec)
+```
+
+4. 会话B提交
+```SQL
+mysql> commit;
+Query OK, 0 rows affected (0.01 sec)
+```
+
+5. 然后会话A再次执行select：
+```SQL
+//其实应该在事务开始前就改掉，此处为了记笔记简便
+mysql> set session transaction isolation level read committed;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select @@tx_isolation;
++----------------+
+| @@tx_isolation |
++----------------+
+| READ-COMMITTED |
++----------------+
+1 row in set, 1 warning (0.00 sec)
+
+//RC级别下每次select都重新读取快照
+mysql> select * from account where id=14;
+Empty set (0.00 sec)
+
+------------------------------------------------------
+
+mysql> set session transaction isolation level repeatable read;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select @@tx_isolation;
++-----------------+
+| @@tx_isolation  |
++-----------------+
+| REPEATABLE-READ |
++-----------------+
+1 row in set, 1 warning (0.00 sec)
+
+//RR级别下还是能查询到14的数据，因为他只在事务开始时读取一次快照
+mysql> select * from account where id=14;
++----+-------------+-------+
+| id | username    | money |
++----+-------------+-------+
+| 14 | anothertest |  1234 |
++----+-------------+-------+
+1 row in set (0.00 sec)
+```
