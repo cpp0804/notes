@@ -197,5 +197,17 @@ redo log记录的是数据页的变化，当一个数据页产生的变化需要
 
 ![bufferblock](./pic/MySQL日志_bufferblock.png)
 
+### group commit 
+group commit的功能是一次fsync可以刷新确保多个事务日志被写入文件。
+
 ## 6. undo log
-innodb存储引擎对undo的管理采用段的方式。rollback segment称为回滚段，每个回滚段中有1024个undo log segment。InnoDB支持128个回滚段
+innodb存储引擎对undo的管理采用段的方式。rollback segment称为回滚段，每个回滚段中有1024个undo log segment，在每个undo log segment段中进行undo页的申请。InnoDB支持128个回滚段
+
+当事务提交时，首先将undo log放入链表中，然后判断undo页的使用空间是否小于3/4，若是则表示该undo页可以被重用，之后新的undo log记录在当前undo log的后面
+
+在InnoDB存储引擎中，undo log分为：
+1. insert undo log：insert undo log是指在insert操作中产生的undo log。因为insert操作的记录，只对事务本身可见，对其他事务不可见（这是事务隔离性的要求），故该undo log可以在事务提交后直接删除。不需要进行purge操作
+2. update undo log：update undo log记录的是对delete和update操作产生的undo log。该undo log可能需要提供MVCC机制，因此不能在事务提交时就进行删除。提交时放入undo log链表，等待purge线程进行最后的删除
+
+### purge
+delete和update并不直接删除原有数据，而是将记录delete flag设置为1。因为MVCC，记录不能在事务提交时马上被处理，这行记录可能被其他事务在引用。当这行没有其他事务在引用时，就可以被delete和update，就由purge清理之前的delete和update操作

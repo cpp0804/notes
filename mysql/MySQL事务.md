@@ -12,7 +12,7 @@
 
 3. 隔离性(isolation)
 
-[又叫并发控制（concurrencycontrol）、可串行化（serializability）、锁（locking)]
+又叫并发控制（concurrencycontrol）、可串行化（serializability）、锁（locking)
 
 一个事务在提交之前，他所做的更改不会被其他事务看见
 
