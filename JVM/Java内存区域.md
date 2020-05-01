@@ -1,3 +1,6 @@
+## 参考博文
+[JVM-String常量池与运行时常量池](https://blog.csdn.net/Sugar_Rainbow/article/details/68150249)
+
 [TOC]
 
 # 1. 内存区域
@@ -65,7 +68,7 @@ JVM内部维护，无OOM(OutOfMemoryError)
 # 2. Java的常量池
 程序运行时，除非手动向常量池中添加常量(比如调用intern方法)，否则jvm不会自动添加常量到常量池
 ## 字符串常量池
-存放字符串常量
+存放字符串常量,JDK1.7后被移到堆里
 [String](../java基础/String.md)
 
 ## Class常量池

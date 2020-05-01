@@ -1,5 +1,10 @@
 ## 参考博文
 [深入浅出java常量池](https://www.cnblogs.com/syp172654682/p/8082625.html)
+[深入了解Java字符串常量池](https://zhuanlan.zhihu.com/p/52710835)
+[Java中几种常量池的区分](http://tangxman.github.io/2015/07/27/the-difference-of-java-string-pool/)⚠️
+[请别再拿“String s = new String("xyz");创建了多少个String实例”来面试了吧](https://www.iteye.com/blog/rednaxelafx-774673)⚠️
+[深入解析String#intern](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html)⚠️
+[彻底弄懂字符串常量池等相关问题](https://www.cnblogs.com/gxyandwmm/p/9495923.html)⚠️
 
 
 [TOC]
@@ -34,6 +39,26 @@
         */
         System.out.println(s1 == s6);  // true
     }
+```
+```java
+String a="a";
+String b="b";
+String c="c";
+String s=a+b+c;
+//上述代码其实会被执行成以下。在编译期间生成StringBuilder对象进行append操作放入class文件中
+StringBuilder builder=new StringBuilder();
+builder.append(a);
+builder.append(b);
+builder.append(c);
+String s=builder.toString();
+
+String s="a"+"b"+c;
+//上述代码其实会被执行成以下
+String s=new StringBuilder().append("ab").append(c).toString();
+
+String s=a+"b"+"c";
+//上述代码其实会被执行成以下
+String s=new StringBuilder().append(a).append("b").toString("c");
 ```
 
 对于以下代码，final常量在编译期间就会被放进常量池中，所以在编译期间能确定A和B，那么s = A + B相当于s="ab"+"cd"
