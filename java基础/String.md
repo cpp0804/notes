@@ -5,6 +5,8 @@
 [请别再拿“String s = new String("xyz");创建了多少个String实例”来面试了吧](https://www.iteye.com/blog/rednaxelafx-774673)⚠️
 [深入解析String#intern](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html)⚠️
 [彻底弄懂字符串常量池等相关问题](https://www.cnblogs.com/gxyandwmm/p/9495923.html)⚠️
+[Java String 综述(上篇)](https://blog.csdn.net/justloveyou_/article/details/52556427)⚠️
+[Java String 综述(下篇)](https://blog.csdn.net/justloveyou_/article/details/60983034)⚠️
 
 
 [TOC]
