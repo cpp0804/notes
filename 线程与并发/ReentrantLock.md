@@ -2,7 +2,7 @@
 [深入理解ReentrantLock的实现原理](https://juejin.im/post/5c95df97e51d4551d06d8e8e)
 [JUC锁: ReentrantLock详解](https://www.pdai.tech/md/java/thread/java-thread-x-lock-ReentrantLock.html)
 [ReentrantLock(重入锁)功能详解和应用演示](https://www.cnblogs.com/takumicx/p/9338983.html)
-
+[公平锁与非公平锁的对比](https://juejin.im/post/5dbcea3bf265da4cf37683e6)
 
 [TOC]
 
@@ -98,9 +98,11 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 ## lock()获取锁
 Reentrante.lock()->AQS.acquire()->Sync的子类重写AQS的tryAcquire()
 
-公平锁体现在线程获取锁的顺序按照队列先进先出的顺序，后来的线程不能先获得锁
-而对于非公平锁，如果当前锁没有被占用，申请的线程就会获得锁，而不管在队列中等待的线程
+公平锁体现在线程获取锁的顺序按照队列先进先出的顺序，后来的线程不能先获得锁 
+而对于非公平锁，如果当前锁没有被占用，申请的线程就会获得锁，而不管在队列中等待的线程   饥饿
 
+公平锁和非公平锁的性能是不一样的，非公平锁的性能会优于公平锁。为什么呢？因为公平锁在获取锁时，永远是等待时间最长的线程获取到锁，这样当线程T1释放锁以后，如果还想继续再获取锁，它也得去同步队列尾部排队，这样就会频繁的发生线程的上下文切换，当线程越多，对CPU的损耗就会越严重。
+非公平锁性能虽然优于公平锁，但是会存在导致线程饥饿的情况。在最坏的情况下，可能存在某个线程一直获取不到锁。不过相比性能而言，饥饿问题可以暂时忽略，这可能就是ReentrantLock默认创建非公平锁的原因之一了
 - 对于下面的公平锁测试，每个线程都获取和释放锁2次，他们都是轮流的
 ```java
 package thread;

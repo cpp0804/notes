@@ -2,7 +2,6 @@
 [深入理解CAS算法原理](https://www.jianshu.com/p/21be831e851e)
 [JUC原子类: CAS, Unsafe和原子类详解](https://www.pdai.tech/md/java/thread/java-thread-x-juc-AtomicInteger.html)
 [CAS详解](https://www.jianshu.com/p/8e74009684c7)
-[Java魔法类：Unsafe应用解析](https://tech.meituan.com/2019/02/14/talk-about-java-magic-class-unsafe.html)
 
 
 [TOC]
@@ -67,6 +66,56 @@ public class CASTest {
 
 比如现在主内存中的是A，版本号是1，然后t1和t2线程拷贝一份到自己工作内存。t2将A改为B，刷回主内存。此时主内存中的是B，版本号为2。然后再t2再改回A，此时主内存中的是A，版本号为3。这个时候t1线程终于来了，自己工作内存是A，版本号是1，主内存中是A，但是版本号为3，它就知道已经有人动过手脚了
 
+具体可以使用AtomicStampedReference解决ABA问题
+```java
+public class AtomicStampedReference<V> {
+    private static class Pair<T> {
+        final T reference;  //维护对象引用
+        final int stamp;  //用于标志版本
+        private Pair(T reference, int stamp) {
+            this.reference = reference;
+            this.stamp = stamp;
+        }
+        static <T> Pair<T> of(T reference, int stamp) {
+            return new Pair<T>(reference, stamp);
+        }
+    }
+    private volatile Pair<V> pair;
+    ....
+    
+    /**
+      * expectedReference ：更新之前的原始值
+      * newReference : 将要更新的新值
+      * expectedStamp : 期待更新的标志版本
+      * newStamp : 将要更新的标志版本
+      */
+    public boolean compareAndSet(V   expectedReference,
+                             V   newReference,
+                             int expectedStamp,
+                             int newStamp) {
+        // 获取当前的(元素值，版本号)对
+        Pair<V> current = pair;
+        return
+            // 引用没变
+            expectedReference == current.reference &&
+            // 版本号没变
+            expectedStamp == current.stamp &&
+            // 新引用等于旧引用
+            ((newReference == current.reference &&
+            // 新版本号等于旧版本号
+            newStamp == current.stamp) ||
+            // 构造新的Pair对象并CAS更新
+            casPair(current, Pair.of(newReference, newStamp)));
+    }
+
+    private boolean casPair(Pair<V> cmp, Pair<V> val) {
+        // 调用Unsafe的compareAndSwapObject()方法CAS更新pair的引用为新引用
+        return UNSAFE.compareAndSwapObject(this, pairOffset, cmp, val);
+    }
+}
+```
+
+
 ```java
 package thread;
 
@@ -115,95 +164,7 @@ public class CASTest {
 
 # 2. JAVA实现的CAS
 ## 2.1 Unsafe
-Java 无法直接访问底层操作系统，只能通过本地（native）方法来访问。Unsafe 提供了硬件级别的操作，比如说获取某个属性在内存中的位置，比如说修改对象的私有字段值
-
-Unsafe是单例类，并且调用getUnsafe获取Unsafe实例的调用类必须是引导类加载器Bootstrap Classloader加载的，否则抛出SecurityException异常。
-```java
-public final class Unsafe {
-  // 单例对象
-  private static final Unsafe theUnsafe;
-
-  private Unsafe() {
-  }
-  @CallerSensitive
-  public static Unsafe getUnsafe() {
-    Class var0 = Reflection.getCallerClass();
-    // 仅在引导类加载器`BootstrapClassLoader`加载时才合法
-    if(!VM.isSystemDomainLoader(var0.getClassLoader())) {    
-      throw new SecurityException("Unsafe");
-    } else {
-      return theUnsafe;
-    }
-  }
-}
-```
-
-不提倡在代码中显示使用Unsafe类，但是可以有两种获取他的示例的方法：
-1. 通过Java命令行命令-Xbootclasspath/a把调用Unsafe相关方法的类A所在jar包路径追加到默认的bootstrap路径中，使得A被引导类加载器加载，从而通过Unsafe.getUnsafe方法安全的获取Unsafe实例
-```
-java -Xbootclasspath/a: ${path}   // 其中path为调用Unsafe相关方法的类所在jar包路径 
-```
-
-2. 通过反射获取单例对象theUnsafe
-```java
-private static Unsafe reflectGetUnsafe() {
-    try {
-      Field field = Unsafe.class.getDeclaredField("theUnsafe");
-      field.setAccessible(true);
-      return (Unsafe) field.get(null);
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-      return null;
-    }
-}
-```
-
-## 应用
-![Unsafe应用](./pic/CAS_Unsafe应用.png)
-
-### 内存操作
-在Java中创建的对象都分配在堆内存中，由虚拟机进程管控。而堆外内存是虚拟机管控之外的内存区域，它由操作系统管理。Java对堆外内存的操作通过Unsafe提供的操作堆外内存的native方法
-```java
-//分配内存, 相当于C++的malloc函数
-public native long allocateMemory(long bytes);
-//扩充内存
-public native long reallocateMemory(long address, long bytes);
-//释放内存
-public native void freeMemory(long address);
-//在给定的内存块中设置值
-public native void setMemory(Object o, long offset, long bytes, byte value);
-//内存拷贝
-public native void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes);
-//获取给定地址值，忽略修饰限定符的访问限制。与此类似操作还有: getInt，getDouble，getLong，getChar等
-public native Object getObject(Object o, long offset);
-//为给定地址设置值，忽略修饰限定符的访问限制，与此类似操作还有: putInt,putDouble，putLong，putChar等
-public native void putObject(Object o, long offset, Object x);
-//获取给定地址的byte类型的值（当且仅当该内存地址为allocateMemory分配时，此方法结果为确定的）
-public native byte getByte(long address);
-//为给定地址设置byte类型的值（当且仅当该内存地址为allocateMemory分配时，此方法结果才是确定的）
-public native void putByte(long address, byte x);
-```
-
-- 使用堆外内存的原因
-1. 改善GC时的回收停顿：使用堆外内存，可以使堆内存保持一个比较小的规模，减少GC的回收停顿时间
-2. 提高I/O操作的性能：在I/O过程中， 需要将堆内存数据拷贝到堆外内存中， 对需要频繁拷贝并且生命周期短的数据可以直接放到堆外内存
-
-
-DirectByteBuffer是Java用于实现堆外内存的一个重要类，通常用在通信过程中做缓冲池，如在Netty、MINA等NIO框架中应用广泛。DirectByteBuffer对于堆外内存的创建、使用、销毁等逻辑均由Unsafe提供的堆外内存API来实现。
-
-
-
-### CAS
-atomic原子类都是调用Unsafe中的方法实现的，它里面的方法都是native方法
-
-经过反编译，可以看到他的CAS方法有3种
-```java
-public final native boolean compareAndSwapObject(Object paramObject1, long paramLong, Object paramObject2, Object paramObject3);
-
-public final native boolean compareAndSwapInt(Object paramObject, long paramLong, int paramInt1, int paramInt2);
-
-public final native boolean compareAndSwapLong(Object paramObject, long paramLong1, long paramLong2, long paramLong3);
-```
+[Unsafe](./Unsafe.md)
 
 
 

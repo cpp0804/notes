@@ -276,6 +276,7 @@ public class SynchronizedDemo2 {
         }
 }
 ```
+
 执行：
 ```shell
 javap -verbose SynchronizedDemo.class
