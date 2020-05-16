@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * @description 压测AtomicLong的原子操作性能
+ * @description 压测AtomicLong的原子操作性能，和LongAdderTest进行比较
 */
 public class AtomicLongTest implements Runnable {
 

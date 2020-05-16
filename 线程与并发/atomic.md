@@ -8,8 +8,9 @@
 [TOC]
 
 
-
 ![原子类概览](./pic/atomic_原子类概览.png)
+
+atomic包中的原子类都是基于[Unsafe](./Unsafe.md)实现的
 
 # 1. 原子更新基本类型
 ## AtomicInteger
@@ -51,7 +52,7 @@ public int getCount() {
 整个过程中，利用CAS机制保证了对于value的修改的线程安全性。
 ```
 
-源码解析：AtomicInteger底层用的是volatile的变量和CAS来进行更改数据的
+源码解析：AtomicInteger底层用的是==volatile变量==和==CAS==来进行更改数据的
 - volatile保证线程的可见性，多线程并发时，一个线程修改数据，可以保证其它线程立马看到修改后的值
 - CAS 保证数据更新的原子性
 
@@ -168,6 +169,7 @@ public class CASTest {
         p3 = (Person) ar.get();
         System.out.println("p3 is " + p3);
         System.out.println("p3.equals(p1)=" + p3.equals(p1));
+        System.out.println("p3.equals(p2)=" + p3.equals(p2));
     }
 
     static class Person {
@@ -182,6 +184,12 @@ public class CASTest {
         }
     }
 }
+/*
+p3.equals(p1)=true
+p3 is id:102
+p3.equals(p1)=false
+p3.equals(p2)=true
+*/
 ```
 
 
@@ -423,6 +431,7 @@ public class CASTest {
         testAtomicIntegerFieldUpdater();
     }
 
+    //name是类DataDemo中的一个字段名
     public static AtomicIntegerFieldUpdater<DataDemo> updater(String name){
         return AtomicIntegerFieldUpdater.newUpdater(DataDemo.class,name);
 
@@ -431,7 +440,8 @@ public class CASTest {
     public static void testAtomicIntegerFieldUpdater() {
         DataDemo data = new DataDemo();
         System.out.println("publicVar = "+updater("publicVar").addAndGet(data, 2));
-
+        //System.out.println("publicVar = "+updater("publicVar").getAndIncrement(data));
+         
          /* 由于在DataDemo类中属性value2/value3,在TestAtomicIntegerFieldUpdater中不能访问
          将报 java.lang.IllegalAccessException异常
          */
@@ -441,7 +451,7 @@ public class CASTest {
         //System.out.println("staticVar = "+updater("staticVar").getAndIncrement(data));//报java.lang.IllegalArgumentException
         /*
          * 下面报异常：java.lang.IllegalArgumentException:must be integer
-         * */
+         */
  //       System.out.println("integerVar = "+updater("integerVar").getAndIncrement(data));
  //       System.out.println("longVar = "+updater("longVar").getAndIncrement(data));
     }

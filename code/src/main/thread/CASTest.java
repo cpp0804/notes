@@ -15,8 +15,7 @@ public class CASTest {
     static AtomicStampedReference<String> atomicReferenceVersion = new AtomicStampedReference<>("A", 1);
 
     public static void main(String[] args) {
-        testAtomicIntegerFieldUpdater();
-        Collections.unmodifiableMap()
+        atomicReferenceTest();
 
     }
 
@@ -75,6 +74,7 @@ public class CASTest {
         p3 = (Person) ar.get();
         System.out.println("p3 is " + p3);
         System.out.println("p3.equals(p1)=" + p3.equals(p1));
+        System.out.println("p3.equals(p2)=" + p3.equals(p2));
     }
 
     static class Person {

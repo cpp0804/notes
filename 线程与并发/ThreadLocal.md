@@ -45,7 +45,7 @@ threadLabel = main
 */
 ```
 
-2. 实现机制
+# 2. 实现机制
 - get()
 1. 根据当前线程获取到他的ThreadLocalMap
 2. 如果ThreadLocalMap不为null，则以当前的ThreadLocal为key去map中寻找value。如果value存在就返回；如果不存在则调用setInitialValue()以当前ThreadLocal为key，存入一个默认的value
@@ -105,10 +105,8 @@ public void remove() {
 }
 ```
 
-3. ThreadLocalMap
-1. ThreadLocalMap是ThreadLocal的静态内部类
-2. 内部使用Entry数组来存储Key, Value
-3. Entry实现继承了WeakReference<ThreadLocal<?>>,说明key以弱引用的方式保存  [四种引用](../java基础/四种引用.md)
+# 3. ThreadLocalMap
+ThreadLocalMap是ThreadLocal的静态内部类，它内部使用Entry数组来存储Key-Value，Entry实现继承了WeakReference<ThreadLocal<?>>,说明key以弱引用的方式保存  [四种引用](../java基础/四种引用.md)
 
 ```java
 // 初始容量，必须是 2 的幂
@@ -181,13 +179,13 @@ private void set(ThreadLocal key, Object value) {
 }
 ```
 
-4. 内存泄露
+# 4. 内存泄露
 使用弱引用方式关联ThreadLocal，可以在ThreadLocal对象在外部被清除时避免由于map的关联而不能GC，但仍会存在value的不能被清除，所以在ThreadLocalMap 的 set()，get() 和 remove() 方法中，都有清除key为null的Entry的操作，这样做是为了降低内存泄漏发生的可能
 
 我们在使用 ThreadLocal 的时候，每次用完 ThreadLocal 都调用 remove() 方法清除数据，防止内存泄漏
 
 
-5. 应用场景
+# 5. 应用场景
 - 每个线程维护了一个“序列号”
 ```java
 public class SerialNum {
@@ -284,3 +282,6 @@ class Student{
     
 }
 ```
+
+
+# 5. InheritableThreadLocal

@@ -27,6 +27,20 @@ static int i=1；
 >4. 子类静态代码块、
 
 
+## 多线程的初始化安全
+虚拟机能保证一个类的clinit方法在多线程环境中能正确的加锁、同步。每个类或接口都有一个唯一的初始化锁LC，线程在初始化前会先获得这个锁，并且每个线程都至少获取释放一次来保证这个类被初始化过
+1. 某个Class对象还没被初始化，state=noInitialization,线程A和B同时去初始化。A获得了锁，A将设置state=initializing并释放锁。B等待
+![clinit第一阶段](./pic/init和clinit_clinit第一阶段.jpeg)
+
+2. A执行初始化过程。B获取到初始化锁，看到state=initializing后释放锁，在锁的condition中等待
+![clinit第二阶段](./pic/init和clinit_clinit第二阶段.jpeg)
+
+3. A初始化完成后获取初始化所，设置state=initialized并唤醒在condition中等待的线程，然后释放锁。A的初始化处理过程完成。
+![clinit第三阶段](./pic/init和clinit_clinit第三阶段.jpeg)
+
+4. B获得初始化锁，读到state=initialized后释放锁，B的初始化处理过程完成。
+![clinit第四阶段](./pic/init和clinit_clinit第四阶段.jpeg)
+
 
 
 # init

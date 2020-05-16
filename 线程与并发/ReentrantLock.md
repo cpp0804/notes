@@ -233,7 +233,11 @@ public class ReentrantLockTest {
 
 
 ### 非公平锁NonFairSync
-1. ==NonFairSync中调用lock()方法==使用CAS设置计数器state的值
+```
+ReentrantLock:lock() -> NonFairSync:lock() -> AQS:acquire(int arg) -> NonFairSync:tryAcquire(int acquires) -> Sync:nonfairTryAcquire()
+```
+
+1. ==NonFairSync中调用lock()方法==使用CAS设置volatile计数器state的值
 - 如果state期望值为0(代表锁没被占用)，则将state置为1(代表当前线程成功获取锁)，然后执行setExclusiveOwnerThread方法直接将该线程设置成锁的所有者。
 - 如果state不为0，说明锁被占用，执行==AQS的acquire(1)==
 
@@ -307,6 +311,10 @@ final boolean nonfairTryAcquire(int acquires) {
 
 
 ### 公平锁FairSync
+```
+ReentrantLock:lock() -> FairSync:lock() -> AQS:acquire(int arg) -> FairSync:tryAcquire(int acquires)
+```
+
 1. 执行==FairSync的lock()方法==
 
 2. FairSync的lock()方法主体是==AQS的acquire(1)==
@@ -381,8 +389,9 @@ public final void acquire(int arg) {
 
 ## unlock()释放锁
 公平锁和非公平锁的释放过程一样
-
-Reentrante.unLock()->AQS.release()->Sync的子类重写AQS的tryRelease()
+```
+Reentrante:unLock() -> AQS:release(int arg) -> Sync:tryRelease()
+```
 
 1. 判断当前线程是不是锁的所有者，如果不是就抛出异常。如果是就执行步骤2
 2. 判断state-1后是否为0，如果是代表锁已经释放完，则唤醒队列中后面的线程。如果state-1不为0，说明锁重入了，锁还没释放完
