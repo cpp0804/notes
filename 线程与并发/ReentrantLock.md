@@ -548,7 +548,7 @@ public class ReentrantLockTest {
 ## 结合Condition实现等待通知机制
 在使用Condition前，线程必须获得锁。
 
-- condition.await()：线程进入condition的等待队列,并且会释放锁
+- condition.await()：线程进入condition的等待队列,并且会释放锁,最后调用LockSupport.park()阻塞当前线程
 - condition.signal()：随机解除某一个线程，将其从condition的等待队列放入AQS的同步队列
 - condition.signalAll()：解除condition等待队列中的所有线程
 

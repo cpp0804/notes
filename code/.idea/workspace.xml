@@ -1,43 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0a943cf8-08be-45bf-974b-26fef1f597c1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/thread/CircleCASTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/thread/DaemonTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/thread/FinalTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/thread/Student.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/thread/ThreadABC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/对象创建过程.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/对象创建过程.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/深入理解Java虚拟机.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Linux/鸟哥的Linux私房菜.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/thread/AtomicLongTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/thread/AtomicLongTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/thread/CASTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/thread/CASTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/thread/InterruptTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/thread/InterruptTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/thread/LongAdderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/thread/LongAdderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/thread/CASTest$DataDemo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/thread/CASTest$DataDemo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/thread/CASTest$Person.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/thread/CASTest$Person.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/thread/CASTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/thread/CASTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/thread/InterruptTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/thread/InterruptTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mysql/MySQL技术内幕：SQL编程.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mysql/MySQL技术引擎：InnoDB存储引擎.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mysql/高性能MySQL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../日记/daily_report.md" beforeDir="false" afterPath="$PROJECT_DIR$/../日记/daily_report.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../日记/每日计划.md" beforeDir="false" afterPath="$PROJECT_DIR$/../日记/每日计划.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/CAS.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/CAS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/Java内存模型.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/Java内存模型.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/Java并发编程实战.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/ReentrantLock.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/ReentrantLock.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/ThreadLocal.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/ThreadLocal.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/atomic.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/atomic.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/pic/线程基础_线程状态.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/synchronized.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/synchronized.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/volatile.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/volatile.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/三个interrupt方法.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/三个interrupt方法.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/线程基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/线程基础.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/线程安全的实现方法.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/线程安全的实现方法.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/线程安全程度.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/线程安全程度.md" afterDir="false" />
-    </list>
+    <list default="true" id="0a943cf8-08be-45bf-974b-26fef1f597c1" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -59,7 +23,7 @@
         <counts>
           <entry key="class" value="6" />
           <entry key="iml" value="1" />
-          <entry key="java" value="71" />
+          <entry key="java" value="73" />
           <entry key="xml" value="1" />
         </counts>
       </usages-collector>
@@ -67,7 +31,7 @@
         <counts>
           <entry key="CLASS" value="6" />
           <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="71" />
+          <entry key="JAVA" value="73" />
           <entry key="XML" value="1" />
         </counts>
       </usages-collector>
@@ -107,11 +71,37 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/thread/FinalTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="514">
-              <caret line="44" column="5" lean-forward="true" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
+            <state relative-caret-position="424">
+              <caret line="39" column="24" lean-forward="true" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/AbstractQueuedSynchronizer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="252">
+              <caret line="626" column="4" selection-start-line="626" selection-start-column="4" selection-end-line="630" selection-end-column="5" />
+              <folding>
+                <element signature="e#41392#41393#0" expanded="true" />
+                <element signature="e#41449#41450#0" expanded="true" />
+                <element signature="e#42562#42563#0" expanded="true" />
+                <element signature="e#42619#42620#0" expanded="true" />
+                <element signature="e#44444#44445#0" expanded="true" />
+                <element signature="e#44501#44502#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/AbstractOwnableSynchronizer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="488">
+              <caret line="70" column="29" lean-forward="true" selection-start-line="70" selection-start-column="29" selection-end-line="70" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -133,6 +123,12 @@
       <find>lockIn</find>
       <find>synchronized</find>
       <find>init</find>
+      <find>try</find>
+      <find>tryAcquire</find>
+      <find>isHeldExclusively</find>
+      <find>node</find>
+      <find>Node</find>
+      <find>setHead</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/main/java</dir>
@@ -253,11 +249,11 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="concurrent&#9;FILE&#9;jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/jre/lib/rt.jar!/java/util/concurrent&#10;inheri&#9;PSI&#9;JAVA://java.lang.InheritableThreadLocal&#10;atomicin&#9;PSI&#9;JAVA://java.util.concurrent.atomic.AtomicIntegerFieldUpdater&#10;directbyte&#9;PSI&#9;JAVA://java.nio.DirectByteBuffer&#10;atomi&#9;PSI&#9;JAVA://java.lang.Class.Atomic&#10;reen&#9;FILE&#9;jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/ReentrantLock.java&#10;unparks&#9;PSI&#9;JAVA://java.util.concurrent.locks.AbstractQueuedLongSynchronizer#unparkSuccessor&#10;unparkSuccessor&#9;PSI&#9;JAVA://java.util.concurrent.locks.AbstractQueuedSynchronizer#unparkSuccessor&#10;ree&#9;PSI&#9;JAVA://java.util.concurrent.locks.ReentrantLock&#10;javacomp&#9;PSI&#9;JAVA://com.sun.tools.javac.main.JavaCompiler" />
+    <property name="SearchEverywhereHistoryKey" value="abstract&#9;FILE&#9;jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/AbstractQueuedSynchronizer.java&#10;concurrent&#9;FILE&#9;jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/jre/lib/rt.jar!/java/util/concurrent&#10;inheri&#9;PSI&#9;JAVA://java.lang.InheritableThreadLocal&#10;atomicin&#9;PSI&#9;JAVA://java.util.concurrent.atomic.AtomicIntegerFieldUpdater&#10;directbyte&#9;PSI&#9;JAVA://java.nio.DirectByteBuffer&#10;atomi&#9;PSI&#9;JAVA://java.lang.Class.Atomic&#10;reen&#9;FILE&#9;jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/ReentrantLock.java&#10;unparks&#9;PSI&#9;JAVA://java.util.concurrent.locks.AbstractQueuedLongSynchronizer#unparkSuccessor&#10;unparkSuccessor&#9;PSI&#9;JAVA://java.util.concurrent.locks.AbstractQueuedSynchronizer#unparkSuccessor&#10;ree&#9;PSI&#9;JAVA://java.util.concurrent.locks.ReentrantLock&#10;javacomp&#9;PSI&#9;JAVA://com.sun.tools.javac.main.JavaCompiler" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1589625470644" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1589639146706" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -377,12 +373,12 @@
       <option name="presentableId" value="Default" />
       <updated>1588158549879</updated>
       <workItem from="1588158552495" duration="3029000" />
-      <workItem from="1588227622479" duration="41482000" />
+      <workItem from="1588227622479" duration="42487000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44511000" />
+    <option name="totallyTimeSpent" value="45516000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
@@ -397,7 +393,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.30593133" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.12382934" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.26742977" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -426,13 +422,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/lang/reflect/Field.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="564" column="15" selection-start-line="564" selection-start-column="15" selection-end-line="564" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/javaBase/User.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="431">
@@ -665,20 +654,6 @@
             <element signature="e#9144#9145#0" expanded="true" />
             <element signature="e#15850#15851#0" expanded="true" />
             <element signature="e#15881#15882#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/AbstractQueuedSynchronizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="1218" column="12" selection-start-line="1218" selection-start-column="12" selection-end-line="1218" selection-end-column="12" />
-          <folding>
-            <element signature="e#11804#21933#0" />
-            <element signature="e#41392#41393#0" expanded="true" />
-            <element signature="e#41449#41450#0" expanded="true" />
-            <element signature="e#42562#42563#0" expanded="true" />
-            <element signature="e#42619#42620#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -924,8 +899,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/thread/FinalTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="44" column="5" lean-forward="true" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
+        <state relative-caret-position="424">
+          <caret line="39" column="24" lean-forward="true" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/AbstractOwnableSynchronizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="70" column="29" lean-forward="true" selection-start-line="70" selection-start-column="29" selection-end-line="70" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/util/concurrent/locks/AbstractQueuedSynchronizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="626" column="4" selection-start-line="626" selection-start-column="4" selection-end-line="630" selection-end-column="5" />
+          <folding>
+            <element signature="e#41392#41393#0" expanded="true" />
+            <element signature="e#41449#41450#0" expanded="true" />
+            <element signature="e#42562#42563#0" expanded="true" />
+            <element signature="e#42619#42620#0" expanded="true" />
+            <element signature="e#44444#44445#0" expanded="true" />
+            <element signature="e#44501#44502#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
