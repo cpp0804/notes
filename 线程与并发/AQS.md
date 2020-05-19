@@ -178,6 +178,84 @@ static final class Node {
 
 
 ## AQS内部类——ConditionObject
+在使用Condition前，线程必须获得锁。
+
+- condition.await()：当前线程构造Node进入condition的等待队列,然后释放锁并唤醒后继节点,最后调用LockSupport.park()阻塞当前线程
+- condition.signal()：随机解除某一个线程。如果是非公平锁将直接尝试获取锁，如果获取不到将其从condition的等待队列放入AQS的同步队列
+- condition.signalAll()：解除condition等待队列中的所有线程
+
+线程执行condition.await()方法，将节点1从同步队列转移到条件队列中。
+![await](./pic/ReentrantLock_await.png)
+
+线程执行condition.signal()方法，将节点1从条件队列中转移到同步队列
+![signal](./pic/ReentrantLock_signal.png)
+
+
+阻塞队列的简单实现：
+1.入队和出队线程安全
+2.当队列满时,入队线程会被阻塞;当队列为空时,出队线程会被阻塞。
+
+```java
+package thread;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * 使用Condition和Lock实现阻塞队列
+ */
+public class BlockingQueue<E> {
+
+    int size;
+
+    ReentrantLock lock = new ReentrantLock();
+
+    LinkedList<E> linkedList = new LinkedList<>();
+
+    Condition notFull = lock.newCondition();
+    Condition notEmpty = lock.newCondition();
+
+    public BlockingQueue(int size) {
+        this.size = size;
+    }
+
+    public void enqueue(E e) throws InterruptedException {
+        lock.lock();
+        try {
+            while (linkedList.size() == size) {
+                notFull.await();
+            }
+
+            linkedList.addLast(e);
+            System.out.println("入队：" + e);
+            notEmpty.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public E dequeue() throws InterruptedException {
+        E e;
+        lock.lock();
+        try {
+            while (linkedList.size() == 0) {
+                notEmpty.await();
+            }
+            e = linkedList.removeFirst();
+            System.out.println("出队：" + e);
+            notEmpty.signal();
+
+            return e;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+
+- 源码分析
 ```java
 public class ConditionObject implements Condition, java.io.Serializable {
     // 版本号
@@ -194,7 +272,21 @@ public class ConditionObject implements Condition, java.io.Serializable {
     }
 
     public final void signal() {
-         ...
+        //首先判断当前线程是否获取锁了
+         if (!isHeldExclusively())
+                throw new IllegalMonitorStateException();
+            Node first = firstWaiter;
+            if (first != null)
+                doSignal(first);
+    }
+
+    private void doSignal(Node first) {
+            do {
+                if ( (firstWaiter = first.nextWaiter) == null)
+                    lastWaiter = null;
+                first.nextWaiter = null;
+            } while (!transferForSignal(first) &&
+                     (first = firstWaiter) != null);
     }
 
      public final void signalAll() {
@@ -202,7 +294,22 @@ public class ConditionObject implements Condition, java.io.Serializable {
      }
 
      public final void await() throws InterruptedException {
-         ...
+         if (Thread.interrupted())
+                throw new InterruptedException();
+            Node node = addConditionWaiter();
+            int savedState = fullyRelease(node);
+            int interruptMode = 0;
+            while (!isOnSyncQueue(node)) {
+                LockSupport.park(this);
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                    break;
+            }
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+                interruptMode = REINTERRUPT;
+            if (node.nextWaiter != null) // clean up if cancelled
+                unlinkCancelledWaiters();
+            if (interruptMode != 0)
+                reportInterruptAfterWait(interruptMode);
      }
 }
 ```
@@ -271,7 +378,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 1. 调用tryAcquire():调用该方法的线程会尝试在独占模式下获取锁。如果获取失败，则执行2，3步骤
 2. 调用addWaiter():将调用acquire的线程封装成Node加入同步队列中
-3. 调用acquireQueued():同步队列中的线程不断尝试获取资源
+3. 调用acquireQueued():同步队列中的线程自旋，不断尝试获取资源
 
 ```java
   //此方法是独占模式下线程获取共享资源的顶层入口
@@ -355,7 +462,7 @@ public final boolean release(int arg) {
 
 ```java
 //此方法是共享模式下线程获取共享资源的顶层入口。
-它会获取指定量的资源，获取成功则直接返回，获取失败则进入等待队列，直到获取到资源为止，整个过程忽略中断
+//它会获取指定量的资源，获取成功则直接返回，获取失败则进入等待队列，直到获取到资源为止，整个过程忽略中断
 
  public final void acquireShared(int arg) {
       //tryAcquireShared()尝试获取资源，成功则直接返回；
@@ -372,6 +479,35 @@ public final boolean release(int arg) {
           */
           doAcquireShared(arg);
  }
+
+//队列中的线程开始自旋，只有当前驱结点是head的节点才会尝试获取锁，如果获取到的state>0则获取成功并从自旋中退出
+private void doAcquireShared(int arg) {
+        final Node node = addWaiter(Node.SHARED);
+        boolean failed = true;
+        try {
+            boolean interrupted = false;
+            for (;;) {
+                final Node p = node.predecessor();
+                if (p == head) {
+                    int r = tryAcquireShared(arg);
+                    if (r >= 0) {
+                        setHeadAndPropagate(node, r);
+                        p.next = null; // help GC
+                        if (interrupted)
+                            selfInterrupt();
+                        failed = false;
+                        return;
+                    }
+                }
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                    parkAndCheckInterrupt())
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+}
 ```
 
 - release
@@ -398,4 +534,170 @@ C一看只有3个仍不够继续等待；
 而ReentrantReadWriteLock读锁的tryReleaseShared()只有在完全释放掉资源（state=0）才返回true，
 所以自定义同步器可以根据需要决定tryReleaseShared()的返回值。
 */
+```
+
+
+# 3. 自定义同步组件
+## 独占锁
+定义一个锁，在同一时刻只能有一个线程占有
+
+```java
+package thread;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
+/**
+ * 基于AQS实现独占锁
+ */
+public class Mutex implements Lock {
+
+    //将操作代理到Sync上
+    private final Sync sync = new Sync();
+
+    private static class Sync extends AbstractQueuedSynchronizer {
+
+        //是否处于占用状态
+        protected boolean isHeldExclusively() {
+            return getState() == 1;
+        }
+
+        //当状态为0时获取锁
+        public boolean tryAcquire(int acquires) {
+            if (compareAndSetState(0, 1)) {
+                setExclusiveOwnerThread(Thread.currentThread());
+                return true;
+            }
+            return false;
+        }
+
+        //释放锁，将状态设置为0
+        protected boolean tryRelease(int releases) {
+            if (getState() == 0) {
+                throw new IllegalMonitorStateException();
+            }
+            setExclusiveOwnerThread(null);
+            setState(0);
+            return true;
+        }
+
+        //返回一个condition，每个condition包含一个条件队列
+        Condition newCondition() {
+            return new ConditionObject();
+        }
+
+    }
+
+    @Override
+    public void lock() {
+        sync.acquire(1);
+    }
+
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        sync.acquireInterruptibly(1);
+    }
+
+    @Override
+    public boolean tryLock() {
+        return sync.tryAcquire(1);
+    }
+
+    @Override
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return sync.tryAcquireNanos(1, unit.toNanos(time));
+    }
+
+    @Override
+    public void unlock() {
+        sync.release(1);
+    }
+
+    @Override
+    public Condition newCondition() {
+        return sync.newCondition();
+    }
+}
+```
+
+## 共享锁
+在同一时刻允许最多两个线程同时访问。设置初始state=2，没当一个线程获取到锁就减1。当state=0时，再获取的线程将阻塞
+
+```java
+package thread;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
+/**
+ * 基于AQS实现共享锁
+ */
+public class TwinsLock implements Lock {
+
+    //将操作代理到Sync上
+    private final Sync sync = new Sync(2);
+
+    private static class Sync extends AbstractQueuedSynchronizer {
+
+        Sync(int count) {
+            if (count <= 0) {
+                throw new IllegalArgumentException("count must be larger than zero");
+            }
+            setState(count);
+        }
+
+
+        @Override
+        protected int tryAcquireShared(int reduceCount) {
+            for (; ; ) {
+                int current = getState();
+                int newCount = current - reduceCount;
+                if (newCount < 0 || compareAndSetState(current, newCount)) {
+                    return newCount;
+                }
+            }
+        }
+
+        @Override
+        protected boolean tryReleaseShared(int returnCount) {
+            for (; ; ) {
+                int current = getState();
+                int newCount = current + returnCount;
+                if (compareAndSetState(current, newCount)) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void lock() {
+        sync.acquireShared(1);
+    }
+
+    @Override
+    public void unlock() {
+        sync.releaseShared(1);
+    }
+
+
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+
+    }
+
+    @Override
+    public boolean tryLock() {
+        return false;
+    }
+
+    @Override
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return false;
+    }
+}
 ```
