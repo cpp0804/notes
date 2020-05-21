@@ -56,6 +56,11 @@ public class TwinsLock implements Lock {
         sync.releaseShared(1);
     }
 
+    @Override
+    public Condition newCondition() {
+        return null;
+    }
+
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
