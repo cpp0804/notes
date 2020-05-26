@@ -1,14 +1,29 @@
 ## 参考博文
 [【Socket】Java Socket编程基础及深入讲解](https://www.cnblogs.com/yiwangzhibujian/p/7107785.html#q5.3)
 [Socket编程入门（基于Java实现）](https://juejin.im/post/5ad9dd61518825671c0e1d71)
+[java网络编程Socket通信详解](https://www.cnblogs.com/ltb6w/p/8848872.html)
+
 
 
 [TOC]
 
+
+
+1、TCP协议是面向连接的、可靠的、有序的、以字节流的方式发送数据，通过三次握手方式建立连接，形成传输数据的通道，在连接中进行大量数据的传输，效率会稍低
+2、Java中基于TCP协议实现网络通信的类：客户端的Socket类和服务器端的ServerSocket类
+
+![Socket通信模型](./pic/Sockets_Socket通信模型.jpg)
+
 # 1. 单向通信
 - 服务端
 
-服务端启动后会调用accept监听端口的连接请求
+ ① 创建ServerSocket对象，绑定监听端口
+② 通过accept()方法监听客户端请求
+③ 连接建立后，通过输入流读取客户端发送的请求信息
+④ 通过输出流向客户端发送响应信息
+⑤ 关闭相关资源
+
+
 ```java
 package javaBase.socket;
 
@@ -55,6 +70,12 @@ get message from client: 你好
 
 
 - 客户端
+
+① 创建Socket对象，指明需要连接的服务器的地址和端口号
+② 连接建立后，通过输出流想服务器端发送请求信息
+③ 通过输入流获取服务器响应的信息
+④ 关闭响应资源 
+
 ```java
 package javaBase.socket;
 
@@ -293,6 +314,13 @@ public class SocketClient {
 
 # 4. 服务端多线程处理多个socket请求
 - 服务端
+
+① 服务器端创建ServerSocket，循环调用accept()等待客户端连接
+② 客户端创建一个socket并请求和服务器端连接
+③ 服务器端接受客户端请求，创建socket与该客户建立专线连接
+④ 建立连接的两个socket在一个单独的线程上对话
+⑤ 服务器端继续等待新的连接   
+
 ```java
     //服务端多线程处理多个socket
     public static void cicleSocket() throws IOException {
