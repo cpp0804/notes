@@ -17,7 +17,7 @@
 2. 字节流直接输出；字符流先输出到缓冲区，在调用close()关闭缓冲区时才输出，如果需要未关闭缓冲区就输出可以调用flush()
 3. 字节流可以处理所有类型的数据，字符流只能处理字符类型
 
-![数据操作分类](./pic/IO_数据操作分类.png)
+![数据操作分类](../pic/IO_数据操作分类.png)
 
 
 分类|字节输入流|字节输出流|字符输入流|字符输出流
@@ -35,13 +35,13 @@
 推回输入流|PishbackInputStream||PushBackReader||
 特殊流|DataInputStream|DataOutputStream|||
 ## 字节流
-![字节流](./pic/IO_字节流.png)
+![字节流](../pic/IO_字节流.png)
 
 - 数据以字节为单位
 - 用来处理二进制文件(图片、MP3、视频文件)
 
 ## 字符流
-![字符流](./pic/IO_字符流.png)
+![字符流](../pic/IO_字符流.png)
 
 - 数据以字符为单位。Java中的字符是Unicode编码，一个字符char占用两个字节
 - 用来处理文本文件
@@ -52,7 +52,7 @@ InputStream是输入字节流的父类
 OutputStream是输出字节流的父类
 
 ## 2.1 InputStream
-![继承关系](./pic/IO_InputStream继承关系.png)
+![继承关系](../pic/IO_InputStream继承关系.png)
 
 - 基本方法
 ```java

@@ -12,7 +12,7 @@
 1、TCP协议是面向连接的、可靠的、有序的、以字节流的方式发送数据，通过三次握手方式建立连接，形成传输数据的通道，在连接中进行大量数据的传输，效率会稍低
 2、Java中基于TCP协议实现网络通信的类：客户端的Socket类和服务器端的ServerSocket类
 
-![Socket通信模型](./pic/Sockets_Socket通信模型.jpg)
+![Socket通信模型](../pic/Sockets_Socket通信模型.jpg)
 
 # 1. 单向通信
 - 服务端
@@ -72,7 +72,7 @@ get message from client: 你好
 - 客户端
 
 ① 创建Socket对象，指明需要连接的服务器的地址和端口号
-② 连接建立后，通过输出流想服务器端发送请求信息
+② 连接建立后，通过输出流向服务器端发送请求信息
 ③ 通过输入流获取服务器响应的信息
 ④ 关闭响应资源 
 
@@ -400,7 +400,7 @@ public boolean isOutputShutdown()
 
 # 6. 关于socket的理解
 ## 6.1 三次握手和四次挥手
-![四层协议](./pic/Sockets_四层协议.png)
+![四层协议](../pic/Sockets_四层协议.png)
 
 Socket是归属于应用层，被TCP使用
 
