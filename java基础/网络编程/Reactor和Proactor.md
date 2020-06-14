@@ -17,6 +17,7 @@ poll |较高 |Reactor |Linux |Linux下的JAVA NIO框架，Linux kernels 2.6内�
 epoll |高 Reactor/Proactor| Linux |Linux kernels 2.6内核版本及以后使用epoll进行支持；Linux kernels 2.6内核版本之前使用poll进行支持；另外一定注意，由于Linux下没有Windows下的IOCP技术提供真正的 异步IO 支持，所以Linux下使用epoll模拟异步IO 
 kqueue |高 |Proactor |Linux |目前JAVA的版本不支持
 
+![多路复用IO](../pic/Linux五种IO模型_多路复用IO.png)
 
 
 # 2. Reactor 线程模型

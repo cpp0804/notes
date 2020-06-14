@@ -2,7 +2,7 @@
 [聊聊Linux 五种IO模型](https://www.jianshu.com/p/486b0965c296)
 [linux五种IO模型](https://juejin.im/post/5c725dbe51882575e37ef9ed)
 [IO 模型 - Unix IO 模型](https://www.pdai.tech/md/java/io/java-io-model.html)
-
+[聊聊IO多路复用之select、poll、epoll详解](https://www.jianshu.com/p/dfd940e7fca2) ⚠️
 
 
 [TOC]

@@ -162,6 +162,10 @@ echo:hello2
 # 3. NIO(New IO、Non-blocking IO)
 NIO是一种同步非阻塞的I/O模型，在Java 1.4 中引入了 NIO 框架，对应 java.nio 包，提供了 Channel , Selector，Buffer等抽象
 
+客户端发送的连接请求都会注册到多路复用器上，多路复用器轮询到连接有I/O请求时才启动一个线程进行处理
+
+多路复用器通过不断轮询各个连接的状态，只有在 socket 有流可读或者可写时，应用程序才需要去处理它，在线程的使用上，就不需要一个连接就必须使用一个处理线程了，而是只是有效请求时（确实需要进行 I/O 处理时），才会使用一个线程去处理，这样就避免了 BIO 模型下大量线程处于阻塞等待状态的情景
+
 ## 流和块 
 - BIO以流为单位进行IO，每次都是一个字节一个字节的读写
 - NIO将IO抽象成块，每次进行读写都以块为单位，块被读入内存之后就是一个byte[]，NIO一次可以读或写多个字节
@@ -255,3 +259,6 @@ SelectionKey key = channel.register(selector, SelectionKey.OP_READ);
 ```java
 
 ```
+
+
+# 3. AIO

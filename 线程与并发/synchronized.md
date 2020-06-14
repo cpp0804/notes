@@ -284,7 +284,7 @@ javap -verbose SynchronizedDemo.class
 ![](./pic/synchronized_javap.png)
 
 - 对于代码块，字节码中添加monitorenter和monitorexit指令
-- 对于方法，方法表的flag中添加CC_SYNCHRONIZED标志
+- 对于方法，方法表的flag中添加ACC_SYNCHRONIZED标志
 
 两种指令的底层实现都是获取监视器锁monitor。monitor的实现依赖操作系统的mutex原语，用操作系统实现线程间的切换需要从用户态转到内核态，开销较大。
 

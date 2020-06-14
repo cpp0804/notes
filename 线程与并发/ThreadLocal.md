@@ -206,9 +206,6 @@ public class SerialNum {
 
 - Session的管理
 ```java
-著作权归https://www.pdai.tech所有。
-链接：https://www.pdai.tech/md/java/thread/java-thread-x-threadlocal.html
-
 private static final ThreadLocal threadSession = new ThreadLocal();  
   
 public static Session getSession() throws InfrastructureException {  

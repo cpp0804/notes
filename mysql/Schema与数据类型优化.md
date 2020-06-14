@@ -599,6 +599,8 @@ MySQL数据类型	|含义|其他
 ---|---|---|
 char(n)	|固定长度，最多255个字符|定义多长使用多长,删除末尾空格，适合经常更新
 varchar(n)|	可变长度，最多65535个字符|仅使用必要的空间，保留末尾空格，适合列更新少
+
+
 ###  BINARY和VARBINARY
 BINARY和VARBINARY与前面介绍的CHAR和VARCHAR类型有点类似，不同的是BINARY和VARBINARY存储的是二进制的字符串，而非字符型字符串。也就是说，BINARY和VARBINARY没有字符集的概念，对其排序和比较都是按照二进制值进行对比。
 
