@@ -445,7 +445,7 @@ ResultCode对象，ResultCode.SUCCESS表示删除成功。
 
 
 
-```
+```java
 @Test
 public void put_get_normal() {
     String key = "key_" + UUID.randomUUID().toString();

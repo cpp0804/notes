@@ -225,3 +225,8 @@ public class ConstructorExample {
 1. 执行Bar bar = new Bar()，首先会调用父类的构造方法，所以(1)出打印2
 2. int x = getValue()中的getValue()被子类重写成return j，而子类的构造方法还没执行，所以(2)处打印0
 3. 执行System.out.println(bar.getValue())，经过子类的构造后，(3)处打印2
+
+![构造函数初始化顺序](./pic/init和clinit_构造函数初始化顺序.png)
+
+构造函数的第一条语句必须是super()或者使用this()调用自己的其他构造函数。
+如果父类没有无参构造函数，那么编译器不能自动生成super()，那么需要我们手动super调用父类的有参构造函数或者使用this调用自己的其他构造函数

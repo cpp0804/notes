@@ -599,14 +599,77 @@ FileWriter和FileReader是 OutputStreamWriter和InputStreamReader的子类
 ```java
     InputStreamReader  isr = new InputStreamReader(new FileInputStream("a.txt"));//默认字符集。
 
-    InputStreamReader  isr = new InputStreamReader(newFileInputStream("a.txt"),"GBK");//指定GBK字符集。
+    InputStreamReader  isr = new InputStreamReader(new FileInputStream("a.txt"),"GBK");//指定GBK字符集。
 
     FileReader fr =new FileReader("a.txt");
 ```
 
+```java
+public static void FileReaderWriterTest() {
+        // to store input
+        char[] in = new char[50];
+        int size = 0;
+        try {
+            // just an object
+            File file = new File("fileWrite2.txt");
+
+            // create an actual file & a FileWriter obj
+            FileWriter fw = new FileWriter(file);
+
+            // write characters to the file
+            fw.write("howdy\nfolks\n");
+
+            //flush before closing
+            fw.flush();
+            // close file when done
+            fw.close();
+
+            // create a FileReader Object
+            FileReader fr = new FileReader(file);
+
+            // read the whole file!
+            size = fr.read(in);
+            System.out.print(size + " ");
+            for (char c : in)
+                System.out.print(c);
+        } catch (IOException e) {
+        }
+}
+/*
+12 howdy
+folks
+*/
+```
+
+
 # 5. File
 File 类可以用于表示文件和目录的信息，但是它不表示文件的内容
 ```java
+public static void main(String[] args) {
+    try { // warning: exceptions possible
+        boolean newFile = false;
+        //创建File对象并不代表创建了一个具体的文件
+        File file = new File("fileWrite1.txt");
+        System.out.println(file.exists());
+        newFile = file.createNewFile();
+        System.out.println(newFile);
+        System.out.println(file.exists());
+    } catch (IOException e) {
+    }
+}
+/*
+第一次运行：
+false
+true
+true
+
+第二次运行：
+true
+false
+true
+*/
+
+
 public static void listAllFiles(File dir) {
     if (dir == null || !dir.exists()) {
         return;
@@ -664,6 +727,7 @@ public static void readFileContent(String filePath) throws IOException {
 
 # 6. 常见类
 ## Serializable
+[Serializable](../Serializable.md)
 
 
 ## transient
