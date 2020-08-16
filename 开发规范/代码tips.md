@@ -13,3 +13,5 @@ new BigDecimal(liveRoomResource.getBuyCount().toString())
 5. 要看懂报错的信息，near -50,50其实已经告诉我哪里有问题了
 
 6. 复制别人的SQL要看一下假如把它拼出来了是不是有语法问题
+
+7. 和其他表做join的时候要注意到一对多的关系
