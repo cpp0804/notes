@@ -4,9 +4,14 @@
 new BigDecimal(liveRoomResource.getBuyCount().toString())
 ```
 
-
 2. 任何可能为null的地方都要判空
-
 
 3. 所有的实体类都最好加上toString()方法
 
+4. 执行SQL报错可以贴到idb中执行一下看看
+
+5. 要看懂报错的信息，near -50,50其实已经告诉我哪里有问题了
+
+6. 复制别人的SQL要看一下假如把它拼出来了是不是有语法问题
+
+7. 和其他表做join的时候要注意到一对多的关系
