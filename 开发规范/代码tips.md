@@ -15,3 +15,5 @@ new BigDecimal(liveRoomResource.getBuyCount().toString())
 6. 复制别人的SQL要看一下假如把它拼出来了是不是有语法问题
 
 7. 和其他表做join的时候要注意到一对多的关系
+
+8. 左表和右表join的时候如果字段数据类型不一样会出错，所以多个join中不能只关注自己的表，要所有表都执行看看
