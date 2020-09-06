@@ -28,3 +28,48 @@ mvn dependency:tree>tree.log
 
 
 
+
+
+## 命令
+### 查看某个类
+```shell
+//查看项目下的jar包
+cd tmc-apply/target/tmc-apply/BOOT-INF/lib/
+
+//查看包含某一个关键字的包
+ll | grep servlet
+
+//查看包里面的内容
+vim javax.servlet-api-3.1.0.jar
+
+//搜索某一个文件,搜索到了之后再次回车就能看见里面的内容
+/ServletContext
+```
+
+
+### 4个命令
+##### compile
+编译maven
+
+
+#### package
+编译并打包maven
+
+
+
+
+#### install
+编译并打包maven，然后将jar包安装到本地repository
+```shell
+//-Dmaven.test.skip=true代表跳过测试类
+mvn install -Dmaven.test.skip=true
+```
+
+
+#### deploy
+编译并打包maven，然后将jar包安装到远程repository
+
+### 删除某个包
+```shell
+rm -rf 包名
+```
