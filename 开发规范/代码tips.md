@@ -26,6 +26,50 @@ log.warn("setLiveRoomPriceAndTips error!itemId={}, activityId={}", itemPriceAndC
 
 3. 如果是自己在某个接口中添加了一段代码，那最好给这段代码加上try catch不要影响原有业务
 
+4. 在manager层，对于异常应该直接抛出，并在service层捕获。service返回的Result的success应该是指接口调用的成功或失败，里面的data只反应业务数据。在service中捕获到异常后，应该设置Result的success为false。
+对于调用方来说接收到的都应该是Result，而不应该接收到异常
+
+```java
+//service层
+@Override
+    public Result<Void> cancelMarketContent(Long marketContentId, AppInfo appInfo, Operator operator) {
+        Result<Void> result = Result.createSucc();
+        try {
+            marketContentManager.cancelMarketContent(marketContentId, appInfo, operator);
+            return result;
+        }  catch (BaseException baseException) {
+            logger.warn("cancelMarketContent biz exception, msg={}", baseException.getMessage());
+            return result.fail(baseException.getMessage());
+        } catch (Throwable t) {
+            logger.error("cancelMarketContent system exception", t);
+            return result.fail(ErrorMessageEnum.SYSTEM_ERROR.getMessage());
+        }
+}
+
+//manager层
+@Override
+    public void cancelMarketContent(Long marketContentId, AppInfo appInfo, Operator operator) {
+        EnableCommonTO enableResult = enableCancelMarketContent(marketContentId, appInfo, operator);
+
+        if (enableResult == null) {
+            throw new BaseException("判断能否取消内容报名记录返回结果为空");
+        }
+
+        if (!enableResult.enable()) {
+            throw new BaseException("判断能否取消内容报名记录失败，失败原因：" + enableResult.getReason());
+        }
+
+        ResultDO<Void> cancelResult = marketContentWriteService.cancelApply(marketContentId, new BizContext("取消内容报名记录"), operator, appInfo);
+        if (cancelResult == null) {
+            throw new BaseException("取消内容报名记录返回结果为空，marketContentId: " + marketContentId);
+        }
+
+        if (!cancelResult.isSuccess()) {
+            throw new BaseException("取消内容报名记录失败，marketContentId: " + marketContentId + ", 失败原因:" + cancelResult.getErrorMessage());
+        }
+}
+```
+
 
 # SQL篇
 1. 执行SQL报错可以贴到idb中执行一下看看
