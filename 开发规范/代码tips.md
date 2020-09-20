@@ -18,6 +18,11 @@ new BigDecimal(liveRoomResource.getBuyCount().toString())
 log.warn("setLiveRoomPriceAndTips error!itemId={}, activityId={}", itemPriceAndCountVO.getItemId(), activity.getId(), e);
 ```
 
+4. 所有被远程调用的实体类都要实现serializable接口
+
+5. 所有接口的返回都不要返回抽象类，这样别人远程调用的时候有可能会出现不能序列化的问题。比如有一个抽象类A，他有一个实现B。接口返回了A，别人在调用的时候如果没有引入B所在的包，那么虽然得到的对象是A类型，但是实际返回的B却不能序列化。
+
+
 
 # 异常篇
 1. 任何可能为null的地方都要判空

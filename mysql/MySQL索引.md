@@ -13,6 +13,8 @@
 [MySQL——索引实现原理](https://www.lagou.com/lgeduarticle/66657.html)
 [数据存储 1：数据库索引的原理及使用策略](https://crazyfzw.github.io/2018/07/18/RDBMS-INDEX/)
 [探究InnoDB数据页内部行的存储方式](https://www.jianshu.com/p/aa67d757e591)⚠️
+[B+树：MySQL数据库索引是如何实现的？](https://shouliang.github.io/2019/01/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/48%20%7C%20B+%E6%A0%91%EF%BC%9AMySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F/)
+
 
 [TOC]
 # 缓冲池、顺序读取与随机读取
@@ -129,6 +131,17 @@ select * from table_name where  a > 1 and a < 3 and b > 1;
 select * from table_name where  a = 1 and b > 3;
 ```
 6. 排序
+MySQL有两种方式可以生成有序的结果：
+1. 通过排序操作
+2. 按索引顺序扫描
+
+如果explain出来的type列的值为index，则说明MySQL使用了索引扫描来做排序（不要和Extra列的Using index搞混淆了）
+
+使用索引排序要求非常苛刻，必须满足如下几个条件才能使用索引做排序
+1、索引的列顺序和order by子句的顺序完全一致
+2、并且所有列的排序方向（倒序或者正序）都一样
+3、如果是联表查询，order by中的字段全部在关联表的第一张表中
+
 ```SQL
 //b+树索引的数据本身就是有序的，可以直接返回
 select * from table_name order by a,b,c limit 10;
@@ -146,6 +159,15 @@ select * from table_name order by a,b limit 10;
 a=1的情况下，b,c可以作为索引
 select * from table_name where a =1 order by b,c limit 10;
 ```
+
+对于以下语句，只要有(col1,col2,col3)的索引就可以直接使用索引排序。
+如果想达到根据主键id排序的效果，col3可以为gmt_create，达到类似的效果
+```SQL
+select * from table
+where col1 = ? and col2 = ?
+order by col3
+```
+
 ## 1.2 哈希索引
 哈希索引基于哈希表实现，只能用于精确匹配所有列。存储引擎对所有索引列计算哈希值存在索引中，值存储指向每个数据行的指针。
 
@@ -234,6 +256,8 @@ InnoDB主键索引(聚簇索引)如下图所示：每个叶子节点包含主键
 
 InnoDB二级索引(辅助索引、非聚簇索引)如下图所示：每个叶子节点包含二级索引列值、主键值，InnoDB在更新时无需更新二级索引中的指针。如果索引的是二级索引，那么需要先从二级索引树中找到对应的主键，然后从主键的索引树中找出记录。
 ![二级索引](./pic/MySQL索引_InnoDB二级索引.jpeg)
+
+二级索引包含唯一索引和普通索引
 
 - 提高了I/O密集型应用的性能
 - 插入速度依赖于插入顺序，==对于按主键顺序插入的记录效率很高==
