@@ -14,6 +14,7 @@
 [数据存储 1：数据库索引的原理及使用策略](https://crazyfzw.github.io/2018/07/18/RDBMS-INDEX/)
 [探究InnoDB数据页内部行的存储方式](https://www.jianshu.com/p/aa67d757e591)⚠️
 [B+树：MySQL数据库索引是如何实现的？](https://shouliang.github.io/2019/01/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/48%20%7C%20B+%E6%A0%91%EF%BC%9AMySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F/)
+[深入理解了MySQL，你才能说熟悉数据库](https://zhuanlan.zhihu.com/p/66352669)
 
 
 [TOC]
@@ -29,7 +30,7 @@ MySQL数据库的缓冲池是基于存储引擎的
 
 随机读取（random read）是指访问的页不是连续的，需要磁盘的磁头不断移动
 
-顺序读取指的是逻辑上的顺序，InnoDB使用区管理页，一个区64页。在读取数据库时，可以保证这64个页的读取时顺序的。区和区之间的页可能是顺序的，也可能不是顺序的
+顺序读取指的是逻辑上的顺序，InnoDB使用区管理页，一个区64页。在读取数据库时，可以保证这64个页的读取是顺序的。区和区之间的页可能是顺序的，也可能不是顺序的
 
 
 # 数据结构与算法
@@ -52,6 +53,12 @@ B+树中的每个节点都叫一页：索引页(索引节点)、数据页(数据
 ![B+树插入的3种情况](./pic/MySQL索引_B+树插入的3种情况.png)
 
 ![B+树删除的3种情况](./pic/MySQL索引_树删除的3种情况.png)
+
+
+- B+数的查找过程
+
+如图所示，如果要查找数据项29，那么首先会把磁盘块1由磁盘加载到内存，此时发生一次IO，在内存中用二分查找确定29在17和35之间，锁定磁盘块1的P2指针，内存时间因为非常短（相比磁盘的IO）可以忽略不计，通过磁盘块1的P2指针的磁盘地址把磁盘块3由磁盘加载到内存，发生第二次IO，29在26和30之间，锁定磁盘块3的P2指针，通过指针加载磁盘块8到内存，发生第三次IO，同时内存中做二分查找找到29，结束查询，总计三次IO。真实的情况是，3层的b+树可以表示上百万的数据，如果上百万的数据查找只需要三次IO，性能提高将是巨大的，如果没有索引，每个数据项都要发生一次IO，那么总共需要百万次的IO，显然成本非常非常高。
+![B+树的查找过程](./pic/MYSQL索引_B+树的查找过程.jpg)
 
 # cardinality
 如果某个字段的取值范围很广，几乎没有重复，就是高选择性的，那么此时使用B+树索引是最适合的
@@ -132,14 +139,57 @@ select * from table_name where  a = 1 and b > 3;
 ```
 6. 排序
 MySQL有两种方式可以生成有序的结果：
-1. 通过排序操作
-2. 按索引顺序扫描
+```
+1. 通过排序操作 explain的type列是filesort
+2. 按索引顺序扫描 explain的type列是index
+```
 
-如果explain出来的type列的值为index，则说明MySQL使用了索引扫描来做排序（不要和Extra列的Using index搞混淆了）
+- 通过排序操作过程
+
+先根据查询条件获取结果集，然后在内存中对这个结果集进行排序。如果结果集数量特别大，还需要将结果集写入到多个文件里，然后单独对每个文件里的数据进行排序，然后在文件之间进行归并，排序完成后在进行 limit 操作
+```sql
+CREATE TABLE `person` (
+  `id` int(11) NOT NULL,
+  `city` varchar(16) NOT NULL,
+  `name` varchar(16) NOT NULL,
+  `age` int(11) NOT NULL,
+  `addr` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `city` (`city`)
+) ENGINE=InnoDB;
+
+select city,name,age from person where city='武汉' order by name limit 100  ;
+
+使用 explain 发现该语句会使用 city 索引，并且会有 filesort。我们分析下该语句的执行流程：
+1.初始化 sortbuffer用来存放结果集
+2.找到 city 索引，定位到 city 等于武汉的第一条记录，获取主键索引ID
+3.根据 ID 去主键索引上找到对应记录，取出 city,name,age 字段放入 sortbuffer
+4.在 city 索引取下一个 city 等于武汉的记录的主键ID
+5.重复上面的步骤，直到所有 city 等于武汉的记录都放入 sortbuffer
+6.对 sortbuffer 里的数据根据 name 做快速排序
+
+如果查询的字段较多，则多个列如果都放入 sortbuffer 将占有大量内存空间
+```
+
+
+- 通过索引操作过程
+
+如果 name 字段上有索引，由于索引在构建的时候已经是有序的了，所以就不需要进行额外的排序流程只需要在查询的时候查出指定的条数就可以了
+```sql
+alter table person add index city_user(city, name);
+
+这样查询过程如下：
+1.根据 city,name 联合索引定位到 city 等于武汉的第一条记录，获取主键索引ID
+2.根据 ID 去主键索引上找到对应记录，取出 city,name,age 字段作为结果集返回
+3.继续重复以上步骤直到 city 不等于武汉，或者条数大于 1000
+
+另外这里如果加上 city, name, age 的联合索引，则可以用到索引覆盖，不行到主键索引上进行回表
+```
+
 
 使用索引排序要求非常苛刻，必须满足如下几个条件才能使用索引做排序
 1、索引的列顺序和order by子句的顺序完全一致
-2、并且所有列的排序方向（倒序或者正序）都一样
+
 3、如果是联表查询，order by中的字段全部在关联表的第一张表中
 
 ```SQL
@@ -167,6 +217,10 @@ select * from table
 where col1 = ? and col2 = ?
 order by col3
 ```
+
+
+
+
 
 ## 1.2 哈希索引
 哈希索引基于哈希表实现，只能用于精确匹配所有列。存储引擎对所有索引列计算哈希值存在索引中，值存储指向每个数据行的指针。
@@ -254,6 +308,9 @@ InnoDB中每个页的大小都为16KB，且不能更改
 InnoDB主键索引(聚簇索引)如下图所示：每个叶子节点包含主键值、事务ID、DB_ROLL_PTR以及剩余的列值。数据文件本身就是索引文件
 ![主键索引](./pic/MySQL索引_InnoDB主键索引.jpeg)
 
+主键索引的叶子节点会存储数据行，辅助索引只会存储主键值。
+![主键索引](./pic/MySQL索引_主键索引.png)
+
 InnoDB二级索引(辅助索引、非聚簇索引)如下图所示：每个叶子节点包含二级索引列值、主键值，InnoDB在更新时无需更新二级索引中的指针。如果索引的是二级索引，那么需要先从二级索引树中找到对应的主键，然后从主键的索引树中找出记录。
 ![二级索引](./pic/MySQL索引_InnoDB二级索引.jpeg)
 
@@ -314,6 +371,11 @@ SELECT age FROM student WHERE name = '小李'；
 ```
 ![覆盖索引](./pic/MySQL索引_覆盖索引.jpg)
 
+再比如对以下语句：
+如果我们在建立 name 字段的索引的时候，不是使用单一索引，而是使用联合索引（name，sex）这样的话再执行这个查询语句根据辅助索引查询到的结果就可以获取当前语句的完整数据
+```sql
+select id,name,sex from user where name ='zhangsan';
+```
 
 ## 3.4 使用索引扫描做排序
 - order by的顺序和索引顺序一致(但如果第一列指定成常量条件，剩余的索引列仍可以做排序)
@@ -475,3 +537,51 @@ SELECT * FROM `student` WHERE MATCH(`name`) AGAINST('聪')
 ```
 
 
+# 索引查找构成举例
+## 主键索引
+```sql
+select * from user_innodb where id = 28;
+```
+
+![主键索引查找过程](./pic/MySQL索引_主键索引查找过程.png)
+```
+先在主键树中从根节点开始检索，将根节点加载到内存，比较28<75，走左路。（1次磁盘IO）
+
+将左子树节点加载到内存中，比较16<28<47，向下检索。（1次磁盘IO）
+
+检索到叶节点，将节点加载到内存中遍历，比较16<28，18<28，28=28。查找到值等于28的索引项，直接可以获取整行数据。将改记录返回给客户端。（1次磁盘IO）
+
+磁盘IO数量：3次
+```
+
+## 二级索引
+### 单索引
+age是一个二级索引
+
+底层叶子节点的按照（age，id）的顺序排序，先按照age列从小到大排序，age列相同时按照id列从小到大排序。
+
+使用辅助索引需要检索两遍索引：首先检索辅助索引获得主键，然后使用主键到主索引中检索获得记录。
+
+```sql
+select * from t_user_innodb where age=19;
+```
+![单二级索引查找过程](./pic/MySQL索引_单二级索引查找过程.png)
+
+### 组合二级索引
+```sql
+CREATE TABLE `abc_innodb`
+(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `a`  int(11)     DEFAULT NULL,
+  `b`  int(11)     DEFAULT NULL,
+  `c`  varchar(10) DEFAULT NULL,
+  `d`  varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_abc` (`a`, `b`, `c`)
+) ENGINE = InnoDB;
+```
+
+```sql
+select * from abc_innodb where a = 13 and b = 16 and c = 4;
+```
+![组合二级索引查找过程](./pic/MySQL索引_组合二级索引查找过程.png)
