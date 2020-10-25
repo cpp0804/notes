@@ -182,8 +182,6 @@ alter table person add index city_user(city, name);
 1.根据 city,name 联合索引定位到 city 等于武汉的第一条记录，获取主键索引ID
 2.根据 ID 去主键索引上找到对应记录，取出 city,name,age 字段作为结果集返回
 3.继续重复以上步骤直到 city 不等于武汉，或者条数大于 1000
-
-另外这里如果加上 city, name, age 的联合索引，则可以用到索引覆盖，不行到主键索引上进行回表
 ```
 
 
