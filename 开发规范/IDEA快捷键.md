@@ -15,7 +15,15 @@ Action | Mac OSX|
 跳转到实现处 | ⌘ ⌥ B
 打开和git不一样的文件 | ⌘ K
 
+Ctrl+A：到行首（达到Home键的效果）
 
+Ctrl+E：到行尾（达到End键的效果）
+
+Ctrl+N：到下一行
+
+Ctrl+P：到上一行
+
+Ctrl+K：从光标处开始删除，直到行尾
 
 
 
