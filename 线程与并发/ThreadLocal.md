@@ -2,7 +2,7 @@
 ## 参考博文
 [Java 并发 - ThreadLocal详解](https://www.pdai.tech/md/java/thread/java-thread-x-threadlocal.html)
 [Java 之 ThreadLocal 详解](https://juejin.im/post/5965ef1ff265da6c40737292)
-
+[Java并发：InheritableThreadLocal详解](https://blog.csdn.net/v123411739/article/details/79117430)
 
 
 [TOC]
@@ -282,3 +282,5 @@ class Student{
 
 
 # 5. InheritableThreadLocal
+## 定义
+InheritableThreadLocal继承了ThreadLocal，此类扩展了ThreadLocal以提供从父线程到子线程的值的继承：当创建子线程时，子线程接收父线程具有的所有可继承线程局部变量的初始值
