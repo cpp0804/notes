@@ -3,6 +3,7 @@
 [Java 并发 - ThreadLocal详解](https://www.pdai.tech/md/java/thread/java-thread-x-threadlocal.html)
 [Java 之 ThreadLocal 详解](https://juejin.im/post/5965ef1ff265da6c40737292)
 [Java并发：InheritableThreadLocal详解](https://blog.csdn.net/v123411739/article/details/79117430)
+[InheritableThreadLocal详解](https://www.jianshu.com/p/94ba4a918ff5)
 
 
 [TOC]
@@ -284,3 +285,144 @@ class Student{
 # 5. InheritableThreadLocal
 ## 定义
 InheritableThreadLocal继承了ThreadLocal，此类扩展了ThreadLocal以提供从父线程到子线程的值的继承：当创建子线程时，子线程接收父线程具有的所有可继承线程局部变量的初始值
+
+它继承自ThreadLocal,重写了三个方法
+```java
+
+public class InheritableThreadLocal<T> extends ThreadLocal<T> {
+    /**
+     * Computes the child's initial value for this inheritable thread-local
+     * variable as a function of the parent's value at the time the child
+     * thread is created.  This method is called from within the parent
+     * thread before the child is started.
+     * <p>
+     * This method merely returns its input argument, and should be overridden
+     * if a different behavior is desired.
+     *
+     * @param parentValue the parent thread's value
+     * @return the child thread's initial value
+     */
+    protected T childValue(T parentValue) {
+        return parentValue;
+    }
+ 
+    /**
+     * Get the map associated with a ThreadLocal.
+     *
+     * @param t the current thread
+     */
+    ThreadLocalMap getMap(Thread t) {
+       return t.inheritableThreadLocals;
+    }
+ 
+    /**
+     * Create the map associated with a ThreadLocal.
+     *
+     * @param t the current thread
+     * @param firstValue value for the initial entry of the table.
+     */
+    void createMap(Thread t, T firstValue) {
+        t.inheritableThreadLocals = new ThreadLocalMap(this, firstValue);
+    }
+}
+```
+
+## 线程间传值原理
+- Thread类
+Thread类中包含 threadLocals 和 inheritableThreadLocals 两个变量，其中 inheritableThreadLocals 即主要存储可自动向子线程中传递的ThreadLocal.ThreadLocalMap
+```java
+public class Thread implements Runnable {
+   ......(其他源码)
+    /* 
+     * 当前线程的ThreadLocalMap，主要存储该线程自身的ThreadLocal
+     */
+    ThreadLocal.ThreadLocalMap threadLocals = null;
+
+    /*
+     * InheritableThreadLocal，自父线程集成而来的ThreadLocalMap，
+     * 主要用于父子线程间ThreadLocal变量的传递
+     * 本文主要讨论的就是这个ThreadLocalMap
+     */
+    ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
+    ......(其他源码)
+}
+```
+
+- 父线程创建子线程
+
+1. 构造函数调用init方法
+采用默认方式产生子线程时，inheritThreadLocals=true；若此时父线程inheritableThreadLocals不为空，则将父线程inheritableThreadLocals传递至子线程
+
+2. createInheritedMap
+子线程将parentMap中的所有记录逐一复制至自身线程
+
+```java
+Thread thread = new Thread();
+
+public Thread() {
+    init(null, null, "Thread-" + nextThreadNum(), 0);
+}
+
+/**
+* 默认情况下，设置inheritThreadLocals可传递
+*/
+private void init(ThreadGroup g, Runnable target, String name,
+                long stackSize) {
+    init(g, target, name, stackSize, null, true);
+}
+
+/**
+    * 初始化一个线程.
+    * 此函数有两处调用，
+    * 1、上面的 init()，不传AccessControlContext，inheritThreadLocals=true
+    * 2、传递AccessControlContext，inheritThreadLocals=false
+    */
+private void init(ThreadGroup g, Runnable target, String name,
+                    long stackSize, AccessControlContext acc,
+                    boolean inheritThreadLocals) {
+    ......（其他代码）
+
+    if (inheritThreadLocals && parent.inheritableThreadLocals != null)
+        this.inheritableThreadLocals =
+            ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);
+
+    ......（其他代码）
+}
+
+static ThreadLocalMap createInheritedMap(ThreadLocalMap parentMap) {
+    return new ThreadLocalMap(parentMap);
+}
+
+/**
+    * 构建一个包含所有parentMap中Inheritable ThreadLocals的ThreadLocalMap
+    * 该函数只被 createInheritedMap() 调用.
+    */
+private ThreadLocalMap(ThreadLocalMap parentMap) {
+    Entry[] parentTable = parentMap.table;
+    int len = parentTable.length;
+    setThreshold(len);
+    // ThreadLocalMap 使用 Entry[] table 存储ThreadLocal
+    table = new Entry[len];
+
+    // 逐一复制 parentMap 的记录
+    for (int j = 0; j < len; j++) {
+        Entry e = parentTable[j];
+        if (e != null) {
+            @SuppressWarnings("unchecked")
+            ThreadLocal<Object> key = (ThreadLocal<Object>) e.get();
+            if (key != null) {
+                // 可能会有同学好奇此处为何使用childValue，而不是直接赋值，
+                // 毕竟childValue内部也是直接将e.value返回；
+                // 个人理解，主要为了减轻阅读代码的难度
+                Object value = key.childValue(e.value);
+                Entry c = new Entry(key, value);
+                int h = key.threadLocalHashCode & (len - 1);
+                while (table[h] != null)
+                    h = nextIndex(h, len);
+                table[h] = c;
+                size++;
+            }
+        }
+    }
+}
+```
