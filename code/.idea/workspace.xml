@@ -2,13 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a943cf8-08be-45bf-974b-26fef1f597c1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/algorithms/treetraverse/InTraverse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/algorithms/treetraverse/PreTraverse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/algorithms/treetraverse/postTraverse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/Java内存区域.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/Java内存区域.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/algorithms/sort/HeapSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/algorithms/sort/HeapSort.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../数据结构和算法/排序.md" beforeDir="false" afterPath="$PROJECT_DIR$/../数据结构和算法/排序.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../线程与并发/ConcurrentHashMap.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/ConcurrentHashMap.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_左旋和右旋.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_红黑树.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_红黑树插入1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_红黑树插入2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_红黑树插入3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_红黑树插入4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/pic/面经_红黑树插入5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/腾讯/面经.md" beforeDir="false" afterPath="$PROJECT_DIR$/../面试/腾讯/面经.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -148,7 +151,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/algorithms/treetraverse/postTraverse.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="62">
+            <state relative-caret-position="19">
               <caret line="27" column="24" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="24" />
             </state>
           </provider>
@@ -342,7 +345,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1621951730539" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1622039148877" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -1025,7 +1028,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/algorithms/treetraverse/postTraverse.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
+        <state relative-caret-position="19">
           <caret line="27" column="24" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="24" />
         </state>
       </provider>
