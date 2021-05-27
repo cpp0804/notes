@@ -59,6 +59,11 @@ List<String> mosFields = MosPropertyReader.readInStringList("marketContentSearch
 StringUtils.isNumeric()
 ```
 
+
+11.一个接口如果想返回多个类型的数据，不要想着把一个jsonobject传进去或者当做返回值，这样接口里面对jsonobject做了什么是不可控的。解决思路：
+a.二元组的话可以使用Pair
+b.考虑是不是应该把方法拆分。但如果拆分后都要用到同一个对象，考虑是不是应该把这个对象放到上下文里
+
 # 异常篇
 1. 任何可能为null的地方都要判空
 
