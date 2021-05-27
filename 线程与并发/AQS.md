@@ -39,7 +39,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 
 2. 同步队列：是双向链表，包括head结点和tail结点。没获取到锁的线程被封装成Node在队列中排队等待
 
-3. 条件队列：当使用Condition时才用到这个队列，是一个单向链表。一个Condition对应一个队列
+3. 条件队列：是单向链表，当使用Condition时才用到这个队列，一个Condition对应一个队列
 
 ![AQS队列](./pic/AQS_AQS队列.png)
 
@@ -120,9 +120,9 @@ static final class Node {
     static final Node EXCLUSIVE = null;        
     /*结点状态
     CANCELLED，值为1，表示当前的线程被取消
-    SIGNAL，值为-1，表示当前节点的后继节点包含的线程需要运行，需要进行unpark操作
+    SIGNAL，值为-1，表示后继结点在等待当前结点唤醒。后继结点入队时，会将前继结点的状态更新为SIGNAL
     CONDITION，值为-2，表示当前节点在等待condition，也就是在condition队列中
-    PROPAGATE，值为-3，表示当前场景下后续的acquireShared能够得以执行
+    PROPAGATE，值为-3，共享模式下，前继结点不仅会唤醒其后继结点，同时也可能会唤醒后继的后继结点
     */
     // 值为0，表示当前节点在sync队列中，等待着获取锁
     static final int CANCELLED =  1;
@@ -245,7 +245,7 @@ public class BlockingQueue<E> {
             }
             e = linkedList.removeFirst();
             System.out.println("出队：" + e);
-            notEmpty.signal();
+            notFull.signal();
 
             return e;
         } finally {
@@ -378,7 +378,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 1. 调用tryAcquire():调用该方法的线程会尝试在独占模式下获取锁。如果获取失败，则执行2，3步骤
 2. 调用addWaiter():将调用acquire的线程封装成Node加入同步队列中
-3. 调用acquireQueued():同步队列中的线程自旋，不断尝试获取资源
+3. 调用acquireQueued():同步队列中的线程自旋，不断尝试获取资源。但只有老二节点才会调用tryAcquire获取锁
 
 ```java
   //此方法是独占模式下线程获取共享资源的顶层入口

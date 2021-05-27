@@ -452,7 +452,7 @@ public final void acquireInterruptibly(int arg)
 
 
 构造两个线程分别获取两个lock，其中一个先获取lock1再获取lock2，另一个则相反。如果没有外界中断，死锁状态会一直持续下去。通过将其中一个线程中断， 被中断的线程将抛出异常使得另一个线程能获取到锁
-一开始
+
 ```java
 public class ReentrantLockTest {
     static Lock lock1 = new ReentrantLock();
