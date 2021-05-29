@@ -234,7 +234,7 @@ major_version代表主版本号，有2个字节
 ![version](./pic/Class文件结构_version.png)
 
 ## constant_pool_count
-constant_pool_count代表常量池容量的技术，有2个字节
+constant_pool_count代表常量池容量的计数，有2个字节
 
 Class文件中的计数只有常量池容量计数从1开始，索引值0代表不引用任何一个常量池项目
 
@@ -381,7 +381,7 @@ constantvalue_index是对常量池中一个字面量常量的引用，字面量�
 
 
 [init和clinit](./init和clinit.md)
-对于非static变量(实例变量)的赋值是在类构造器<init>方法中进行的；
+对于非static变量(实例变量)的赋值是在实例构造器init方法中进行的；
 对于static变量(类变量)的赋值有两种方法：
 1. 如果是static final的基本数据类型或String类型的变量，将生成ConstantValue并用于在类加载的准备阶段就进行赋值.例如static final int a=123会在准备阶段就赋值为123
 2. 其余的static变量都在准备阶段进行初始化，而在类加载阶段的初始化阶段时执行clinit进行按代码意愿赋值。例如static int a=123会在准备阶段将a初始化为0，而在初始化阶段赋值为123
