@@ -27,4 +27,11 @@ public class SumOfS_57_1 {
             }
         }
     }
+
+
+    public static void sumOfSThree(int[] nums, int s) {
+        for (int i =0; i < nums.length; i++) {
+            sumOfS(nums, s - nums[i]);
+        }
+    }
 }

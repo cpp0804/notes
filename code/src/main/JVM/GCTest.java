@@ -7,7 +7,7 @@ public class GCTest {
     private Object instance = null;
 
     public static void main(String[] args) {
-        circleReference();
+//        circleReference();
     }
 
     /**

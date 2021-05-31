@@ -86,7 +86,7 @@ undo log：同一记录的undo log会形成一个版本链表，最新的记录�
 0x124465|tom|24|1|1|null
 
 # 3. read view(读视图)
-read view是当某个事务执行快照读的时候，会生成数据库的当前快照，维护当前活跃的事务。将根据read view来判断事务能读到哪个版本的数据(可能是最新的，也可能是undo log里的)。判断方法是拿read view中被访问记录的DB_TRX_ID和read view中其他事务的事务ID作比较，如果满足可见性条件，就可以访问。如果不满足，则拿记录的DB_ROLL_PTR取undo log中取，直到满足可见性条件。
+read view是当某个事务执行快照读的时候，会生成数据库的当前快照，维护当前活跃的事务。将根据read view来判断事务能读到哪个版本的数据(可能是最新的，也可能是undo log里的)。判断方法是拿read view中被访问记录的DB_TRX_ID和read view中其他事务的事务ID作比较，如果满足可见性条件，就可以访问。如果不满足，则拿记录的DB_ROLL_PTR去undo log中取，直到满足可见性条件。
 
 read view有四个字段：
 ```

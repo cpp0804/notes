@@ -2,30 +2,47 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a943cf8-08be-45bf-974b-26fef1f597c1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/JVM/String.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/Class文件结构.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/Class文件结构.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/Java内存区域.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/Java内存区域.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/Java类的编译-加载-执行.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/Java类的编译-加载-执行.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/init和clinit.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/init和clinit.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/垃圾收集器.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/垃圾收集器.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/堆内存分配策略.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/堆内存分配策略.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/对象创建过程.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/对象创建过程.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../JVM/pic/性能调优监控工具_jstack.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../JVM/pic/性能调优监控工具_top.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../JVM/pic/性能调优监控工具_topHp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/JVM/String.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../JVM/性能调优监控工具.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/性能调优监控工具.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/方法调用.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/方法调用.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/源码编译过程.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/源码编译过程.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/类加载器.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/类加载器.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JVM/类加载机制.md" beforeDir="false" afterPath="$PROJECT_DIR$/../JVM/类加载机制.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Linux/pic/进程间通信IPC_FIFO.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Linux/pic/进程间通信IPC_无名管道.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Linux/pic/进程间通信IPC_父子管道.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Linux/进程间通信IPC.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/JVM/GCTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/JVM/GCTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../java基础/值传递和引用传递.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/值传递和引用传递.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/ConcurrentHashMap.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/ConcurrentHashMap.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/上下文切换.md" beforeDir="false" afterPath="$PROJECT_DIR$/../线程与并发/上下文切换.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../线程与并发/进程间通信.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../面试/腾讯/面经.md" beforeDir="false" afterPath="$PROJECT_DIR$/../面试/腾讯/面经.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CircleKNode_23.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CircleKNode_23.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/JVM/GCTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/JVM/GCTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/Datagram.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/网络编程/Datagram.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/hash.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/区分死循环和死锁.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/可变参数.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/可变参数.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/模式匹配.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/模式匹配.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/泛型.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/泛型.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/深克隆和浅克隆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/深克隆和浅克隆.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/网络编程/几个概念.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/网络编程/几个概念.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java基础/网络编程/端口复用.md" beforeDir="false" afterPath="$PROJECT_DIR$/../java基础/网络编程/端口复用.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/MVCC.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/MVCC.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/MySQL中的join.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/MySQL中的join.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/MySQL索引.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/MySQL索引.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/pic/MYSQL索引_B+树的查找过程.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/pic/MySQL索引_B+树插入的3种情况.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/pic/MySQL索引_树删除的3种情况.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/分布式事务.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/分布式事务.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/分表ID设计学习.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/分表ID设计学习.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/多表连接查询执行过程.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/多表连接查询执行过程.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/服务器性能剖析.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/服务器性能剖析.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/查询处理.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/查询处理.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/查询性能优化.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/查询性能优化.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/表.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/表.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/视图.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/视图.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/负载均衡.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/负载均衡.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mysql/集群下的session管理.md" beforeDir="false" afterPath="$PROJECT_DIR$/../mysql/集群下的session管理.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../计算机网络/HTTP和HTTPS.md" beforeDir="false" afterPath="$PROJECT_DIR$/../计算机网络/HTTP和HTTPS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../计算机网络/TCP协议的收发操作.md" beforeDir="false" afterPath="$PROJECT_DIR$/../计算机网络/TCP协议的收发操作.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../计算机网络/TCP和UDP.md" beforeDir="false" afterPath="$PROJECT_DIR$/../计算机网络/TCP和UDP.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../计算机网络/web浏览器.md" beforeDir="false" afterPath="$PROJECT_DIR$/../计算机网络/web浏览器.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../计算机网络/网络是怎样连接的.md" beforeDir="false" afterPath="$PROJECT_DIR$/../计算机网络/网络是怎样连接的.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../面试/shopee/面经.md" beforeDir="false" afterPath="$PROJECT_DIR$/../面试/shopee/面经.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -50,7 +67,7 @@
         <counts>
           <entry key="class" value="11" />
           <entry key="iml" value="1" />
-          <entry key="java" value="307" />
+          <entry key="java" value="310" />
           <entry key="ser" value="2" />
           <entry key="txt" value="3" />
           <entry key="xml" value="1" />
@@ -60,7 +77,7 @@
         <counts>
           <entry key="CLASS" value="11" />
           <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="307" />
+          <entry key="JAVA" value="310" />
           <entry key="PLAIN_TEXT" value="5" />
           <entry key="XML" value="1" />
         </counts>
@@ -68,14 +85,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="17" />
-          <entry key="java" value="48620" />
+          <entry key="java" value="48685" />
           <entry key="txt" value="11" />
           <entry key="xml" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="48620" />
+          <entry key="JAVA" value="48685" />
           <entry key="PLAIN_TEXT" value="28" />
           <entry key="XML" value="6" />
         </counts>
@@ -87,11 +104,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/algorithms/treetraverse/postTraverse.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/algorithms/sort/QuickSort.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="27" column="24" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="24" />
+            <state relative-caret-position="365">
+              <caret line="25" column="22" lean-forward="true" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -123,11 +140,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/JVM/GCTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="35" lean-forward="true" selection-start-line="6" selection-start-column="35" selection-end-line="6" selection-end-column="35" />
+            <state relative-caret-position="396">
+              <caret line="22" column="17" lean-forward="true" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="295">
+              <caret line="19" column="19" lean-forward="true" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CircleKNode_23.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="107">
+              <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -146,28 +181,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="126">
               <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/JVM/String.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-              <folding>
-                <element signature="e#65#66#0" expanded="true" />
-                <element signature="e#101#102#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/src.zip!/java/lang/Thread.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1854">
-              <caret line="140" column="6" selection-start-line="140" selection-start-column="6" selection-end-line="140" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -217,6 +230,8 @@
       <find>preEnd</find>
       <find>中序</find>
       <find>partition</find>
+      <find>和为</find>
+      <find>入口</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/main/java</dir>
@@ -230,7 +245,6 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/AdjustArray_21.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/LinkKNode_22.java" />
-        <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CircleKNode_23.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/ReverseLink_24.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/MergeLink_25.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SubTree_26.java" />
@@ -261,7 +275,6 @@
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/BalanceTree_53_2.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/AppearOneNum_56_1.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/AppearOneNum_56_2.java" />
-        <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SeriesS_57_2.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/ReverseString_58_1.java" />
         <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/Josephuse_62.java" />
@@ -279,6 +292,8 @@
         <option value="$PROJECT_DIR$/src/main/JVM/StringLoaderTest.java" />
         <option value="$PROJECT_DIR$/src/main/JVM/String.java" />
         <option value="$PROJECT_DIR$/src/main/JVM/GCTest.java" />
+        <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java" />
+        <option value="$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CircleKNode_23.java" />
       </list>
     </option>
   </component>
@@ -328,7 +343,15 @@
               <item name="code" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="JVM" type="462c0819:PsiDirectoryNode" />
+              <item name="algorithms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cpp.code" type="b2602c69:ProjectViewProjectNode" />
+              <item name="code" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="algorithms" type="462c0819:PsiDirectoryNode" />
+              <item name="sort" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -344,7 +367,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1622276715379" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1622375544192" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -471,12 +494,12 @@
       <workItem from="1588227622479" duration="99775000" />
       <workItem from="1594550374075" duration="9829000" />
       <workItem from="1621728023005" duration="55743000" />
-      <workItem from="1622275040762" duration="536000" />
+      <workItem from="1622275040762" duration="1223000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="168912000" />
+    <option name="totallyTimeSpent" value="169599000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
@@ -491,7 +514,7 @@
       <window_info id="Favorites" order="6" sideWeight="0.5005203" side_tool="true" weight="0.19041769" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3298647" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.008324662" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3298647" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -634,17 +657,13 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CopyLink_35.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="23" column="5" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/RootOfSum_34.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="310">
           <caret line="24" column="61" selection-start-line="20" selection-start-column="7" selection-end-line="24" selection-end-column="61" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -784,17 +803,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="18" lean-forward="true" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SeriesS_57_2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="424">
           <caret line="29" column="9" lean-forward="true" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="9" />
+          <folding>
+            <element signature="e#183#184#0" expanded="true" />
+            <element signature="e#208#209#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -802,6 +818,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="259">
           <caret line="16" column="39" lean-forward="true" selection-start-line="16" selection-start-column="39" selection-end-line="16" selection-end-column="39" />
+          <folding>
+            <element signature="e#168#169#0" expanded="true" />
+            <element signature="e#193#194#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -873,13 +893,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="239">
           <caret line="34" column="13" lean-forward="true" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/algorithms/sort/QuickSort.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="9" selection-start-line="7" selection-start-column="8" selection-end-line="11" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -993,8 +1006,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/JVM/GCTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="35" lean-forward="true" selection-start-line="6" selection-start-column="35" selection-end-line="6" selection-end-column="35" />
+        <state relative-caret-position="396">
+          <caret line="22" column="17" lean-forward="true" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/SumOfS_57_1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="19" column="19" lean-forward="true" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/algorithms/jianzhioffer/CircleKNode_23.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="107">
+          <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/algorithms/sort/QuickSort.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="365">
+          <caret line="25" column="22" lean-forward="true" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
         </state>
       </provider>
     </entry>

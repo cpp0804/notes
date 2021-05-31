@@ -299,7 +299,7 @@ mysql> SELECT * FROM product LEFT JOIN product_details
 # semi join
 使用两个表的字段进行条件连接，但是只返回一个表的数据。返回左表的数据叫左半semi join,返回右表的数据叫右半semi join。
 
-通常用在in和exists关键字中，
+通常用在in和exists关键字中
 
 # 滑动订单问题
 滑动订单问题是指为每个月返回上一年度（季度或月度等）的滑动订单数，即为每个月份N，返回从月份N-11到月份N的订单总数
@@ -317,5 +317,4 @@ group by a.ordermonth,b.ordermonth;
 
 
 # 性能分析
-TODO
 

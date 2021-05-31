@@ -20,7 +20,7 @@
 1、Long型的hash算法是高32位和低32位异或操作，将Long型转化为Int型，hash方法复杂程度高，再设计比较困难
 2、取模运算，即 % 运算，实现方便，在递增id中可以均匀分桶，再设计比较简单
 ```
-Copy
+
 举个例子
 market_item表分成32个表，分别对应表market_item_[0000-0031]，market_item表分别列为id，路由规则为#id % 32#。
 如果查询id=33的记录,id % 32=1，那么此次查询就在market_item_0001表中
@@ -106,7 +106,7 @@ id = sequenceId * 1000 + sellerId % 512
 
 
 ### 唯一性
-两个组合id(n1,n2)相同的唯一条件是:
+两个组合id(n1,n2)相同的唯一条件是
 ```
 n1.sequenceId == n2.sequenceId && n1.sellerId == n2.sellerId
 ```
