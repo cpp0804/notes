@@ -71,6 +71,7 @@ int main()
 mode 参数与open函数中的 mode 相同。一旦创建了一个 FIFO，就可以用一般的文件I/O函数操作它
 ```c++
 #include <sys/stat.h>
+//依参数pathname建立特殊的FIFO文件，该文件必须不存在，而参数mode为该文件的权限
 // 返回值：成功返回0，出错返回-1
 int mkfifo(const char *pathname, mode_t mode);
 ```
