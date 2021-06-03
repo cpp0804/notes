@@ -3,6 +3,7 @@
 [Java NIO - IO多路复用详解](https://www.pdai.tech/md/java/io/java-io-nio-select-epoll.html)
 [Linux 的 IO 通信 以及 Reactor 线程模型浅析](https://zhuanlan.zhihu.com/p/35065251)
 [第十二节 netty前传-NIO reactor模式](https://www.jianshu.com/p/baa3af1a1ad1)
+[深入理解select、poll和epoll及区别](https://blog.csdn.net/wteruiycbqqvwt/article/details/90299610)
 
 
 [TOC]
@@ -19,6 +20,17 @@ kqueue |高 |Proactor |Linux |目前JAVA的版本不支持
 
 ![多路复用IO](../pic/Linux五种IO模型_多路复用IO.png)
 
+select模型 o(n)：
+（1）单进程可以打开fd(最大连接数)有限制
+（2）对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低。它只知道有IO，却不知道使用哪个socket，就需要无差别轮询
+（3）需要将有关文件描述符的数据结构拷贝进内核,最后再拷贝出来，用户空间和内核空间的复制非常消耗资源
+ (4)当有 I/O 事件到来时， select 通知应用程序有事件到了快去处理，而应用程序必须轮询所有的 FD 集合，测试每个 FD 是否有事件发生，并处理事件
+poll模型 o(n)：
+和select不同的地方：采用链表的方式替换原有fd_set(监听的端口)数据结构,而使其没有连接数的限制。
+epoll模型 o(1)：
+1. 减少了用户态和内核态之间的文件描述符拷贝，通过内核和用户空间共享一块内存来实现的
+2. 减少了对就绪文件描述符的遍历
+3. 采用回调机制，将事件关联fd，会把哪个流发生了怎样的I/O事件通知我们
 
 # 2. Reactor 线程模型
 中心思想是将所有的IO事件注册到一个中心 I/O 多路复用器上，同时主线程/进程阻塞在多路复用器上。一旦有 I/O 事件到来或是准备就绪(文件描述符或 socket 可读、写)，多路复用器返回并将事先注册的相应 I/O 事件分发到对应的处理器中
