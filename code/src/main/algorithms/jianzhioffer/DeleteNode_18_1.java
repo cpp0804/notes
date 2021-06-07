@@ -1,7 +1,5 @@
 package algorithms.jianzhioffer;
 
-import javax.xml.soap.Node;
-
 /**
  * O(1)时间内删除链表节点
  */
