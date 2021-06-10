@@ -42,13 +42,13 @@ public class OverHalfNum_39 {
                 end--;
             }
             if (start < end) {
-                nums[start] = nums[end];
+                nums[start++] = nums[end];
             }
             while (start < end && nums[start] <= temp) {
                 start++;
             }
             if (start < end) {
-                nums[end] = nums[start];
+                nums[end--] = nums[start];
             }
         }
         nums[start] = temp;

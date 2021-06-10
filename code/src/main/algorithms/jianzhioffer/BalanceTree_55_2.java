@@ -7,7 +7,7 @@ package algorithms.jianzhioffer;
  * 4      5        6
  *      7
  */
-public class BalanceTree_53_2 {
+public class BalanceTree_55_2 {
     public static void main(String[] args) {
         BinaryNode node11 = new BinaryNode(6, null, null);
         BinaryNode node9 = new BinaryNode(7, null, null);
