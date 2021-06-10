@@ -12,6 +12,7 @@ GET|POST
 浏览器回退时无害|浏览器回退时会再次提交请求
 产生的URL地址可以被Bookmark|产生的URL地址不可以被Bookmark
 GET请求会被浏览器主动cache|POST请求不会被浏览器主动cache
-GET请求只能进行url编码|POST支持多种编码方式
+GET请求只能进行url编码|POST支持
+多种编码方式
 GET请求参数会被完整保留在浏览器历史记录里|POST中的参数不会被保留
 对参数的数据类型，GET只接受ASCII字符|没有限制
