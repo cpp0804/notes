@@ -1,5 +1,6 @@
 ## 参考博文
 [花了一个星期，我终于把RPC框架整明白了！](https://developer.51cto.com/art/201906/597963.htm)
+[深入理解 RPC](https://juejin.cn/post/6844903443237175310)
 
 [TOC]
 
@@ -139,6 +140,8 @@ public class ServiceProcessor {
 
 ### 服务地址存储
 1. 首先需要一个组件存储服务机器列表等服务数据，组件例如zookeeper，redis，mysql
+
+zookeeper可以充当一个服务注册表（Service Registry），让多个服务提供者形成一个集群，让服务消费者通过服务注册表获取具体的服务访问地址（ip+端口）去访问具体的服务提供者
 
 2. 服务端启动时，需要将自己的服务地址，比如ip，port，以及服务信息，比如接口，版本号等信息，提交到存储服务机器上
 
@@ -351,3 +354,16 @@ public class KryoSerializable {
 ```
 
 ## JSON工具
+
+
+
+# 消息里为什么要有requestID
+当客户端发送了调用请求，他就可以做别的事情了，等待结果返回的过程应该是异步的，这样要解决两个问题：
+1. 怎么让当前线程“暂停”，等结果回来后，再向后执行
+2. 如果一个进程中有多个线程发起远程调用，这样用的是一个socket连接，远程调用的顺序是不一定的。客户端收到响应后，怎么知道这个响应是属于哪个线程的
+
+解决方法：
+1. client在socket调用之前生成socket连接里面唯一的一个requestId,，一般常常使用AtomicLong从0开始累计数字生成唯一ID
+2. 将requestId和处理结果的回调对象callback放入全局的ConcurrentHashMap中 (requestID, callback))
+3. 服务端收到请求后，将response返回给客户端，response中包含requestId
+4. 客户端socket连接上监听消息的线程会取出response中的requestId，根据requestId从Map中获取对应的callback，使用callback处理response
