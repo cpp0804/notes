@@ -200,7 +200,46 @@ public class test {
 ```
 
 十分钟手撕代码：找出给定字符串中所有长度大于等于3的回文。
+```java
+package com.alibaba.porsche.adaptor.prophet.impl;
 
+import com.alibaba.common.lang.StringUtil;
+import com.taobao.hsf.util.Maths;
+
+import java.util.LinkedList;
+import java.util.Stack;
+
+/**
+ * @author fushen
+ * @date 2021/6/15
+ */
+
+public class test {
+    public static void main(String[] args) {
+        circleString("sjabbabbaf");
+    }
+
+    static String result = "";
+    public static void circleString(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            String res1 = innerCircle(string, i, i);
+            String res2 = innerCircle(string, i, i + 1);
+            result = res1.length() > result.length() ? res1 : result;
+            result = res2.length() > result.length() ? res2 : result;
+        }
+
+        System.out.println(result);
+    }
+
+    public static String innerCircle(String string, int start, int end) {
+        while (start >= 0 && end < string.length() && string.charAt(start) == string.charAt(end)) {
+            start--;
+            end++;
+        }
+        return string.substring(start + 1, end);
+    }
+}
+```
 
 幂等性怎么确保的？
 事务
