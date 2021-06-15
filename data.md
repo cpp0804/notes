@@ -199,21 +199,10 @@ public class test {
 }
 ```
 
+
+https://cloud.tencent.com/developer/article/1829510
 十分钟手撕代码：找出给定字符串中所有长度大于等于3的回文。
 ```java
-package com.alibaba.porsche.adaptor.prophet.impl;
-
-import com.alibaba.common.lang.StringUtil;
-import com.taobao.hsf.util.Maths;
-
-import java.util.LinkedList;
-import java.util.Stack;
-
-/**
- * @author fushen
- * @date 2021/6/15
- */
-
 public class test {
     public static void main(String[] args) {
         circleString("sjabbabbaf");
@@ -222,9 +211,9 @@ public class test {
     static String result = "";
     public static void circleString(String string) {
         for (int i = 0; i < string.length(); i++) {
-            // 以s[i]作奇数回文子串的的回文中心向两边扩散，得到的最长回文子串
+            // 以s[i]作奇数回文子串的的回文中心向两边扩散，得到最长回文子串
             String res1 = innerCircle(string, i, i);
-            // 以s[i]、s[i + 1] 分别作偶数回文子串的的回文中心向两边扩散，得到的最长回文子串
+            // 以s[i]、s[i + 1] 分别作偶数回文子串的的回文中心向两边扩散，得到最长回文子串
             String res2 = innerCircle(string, i, i + 1);
             result = res1.length() > result.length() ? res1 : result;
             result = res2.length() > result.length() ? res2 : result;
