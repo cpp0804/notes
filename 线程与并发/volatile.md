@@ -102,7 +102,7 @@ public class Test {
 
 可以使用下面3种方法保证原子性：
 - 采用synchronized：
-```
+```java
 public class Test {
     public  int inc = 0;
     
@@ -129,7 +129,7 @@ public class Test {
 ```
 
 - 采用Lock：
-```
+```java
 
 public class Test {
     public  int inc = 0;
@@ -162,7 +162,7 @@ public class Test {
 }
 ```
 - 采用AtomicInteger：
-```
+```java
 public class Test {
     public AtomicInteger inc = new AtomicInteger();
      
